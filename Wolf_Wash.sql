@@ -216,3 +216,50 @@ CREATE TABLE IF NOT EXISTS admin_logs (
 -- Sample Admin Account for testing
 INSERT INTO admins (admin_id, full_name, password_hash, role)
 VALUES ('ADM001', 'Hall Administrator', 'admin123', 'ADMIN');
+
+CREATE TABLE IF NOT EXISTS machines (
+    machine_id INT PRIMARY KEY,
+    machine_label VARCHAR(50) NOT NULL,
+    status ENUM('AVAILABLE', 'OUT_OF_SERVICE') DEFAULT 'AVAILABLE',
+    out_of_service_reason VARCHAR(255) NULL,
+    updated_by VARCHAR(20) NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (updated_by) REFERENCES admins(admin_id)
+);
+
+INSERT IGNORE INTO machines (machine_id, machine_label, status) VALUES
+(1, 'Washer 1', 'AVAILABLE'),
+(2, 'Washer 2', 'AVAILABLE'),
+(3, 'Washer 3', 'AVAILABLE'),
+(4, 'Washer 4', 'AVAILABLE'),
+(5, 'Washer 5', 'AVAILABLE'),
+(6, 'Washer 6', 'AVAILABLE'),
+(7, 'Washer 7', 'AVAILABLE'),
+(8, 'Washer 8', 'AVAILABLE'),
+(9, 'Washer 9', 'AVAILABLE'),
+(10, 'Washer 10', 'OUT_OF_SERVICE');
+
+
+USE wolf_wash;
+
+CREATE TABLE IF NOT EXISTS dryers (
+    dryer_id INT PRIMARY KEY,
+    dryer_label VARCHAR(50) NOT NULL,
+    status ENUM('AVAILABLE', 'OUT_OF_SERVICE') DEFAULT 'AVAILABLE',
+    out_of_service_reason VARCHAR(255) NULL,
+    updated_by VARCHAR(20) NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (updated_by) REFERENCES admins(admin_id)
+);
+
+INSERT IGNORE INTO dryers (dryer_id, dryer_label, status) VALUES
+(1,  'Dryer 1',  'AVAILABLE'),
+(2,  'Dryer 2',  'AVAILABLE'),
+(3,  'Dryer 3',  'AVAILABLE'),
+(4,  'Dryer 4',  'AVAILABLE'),
+(5,  'Dryer 5',  'AVAILABLE'),
+(6,  'Dryer 6',  'AVAILABLE'),
+(7,  'Dryer 7',  'AVAILABLE'),
+(8,  'Dryer 8',  'AVAILABLE'),
+(9,  'Dryer 9',  'AVAILABLE'),
+(10, 'Dryer 10', 'OUT_OF_SERVICE');
