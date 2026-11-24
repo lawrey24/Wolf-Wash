@@ -2,6 +2,9 @@ package testcases;
 import service.BookingService;
 import model.Booking;
 
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 public class TestBookingService {
 
     public static void main(String[] args) {

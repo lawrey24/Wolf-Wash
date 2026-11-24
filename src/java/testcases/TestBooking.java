@@ -1,10 +1,17 @@
 
 package testcases;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 import model.Booking;
 
 public class TestBooking {
 
-    public static void main(String[] args) {
+    
+    @Test
+    
+    public void testBookingObject() {
 
         String studentId = "123456789";
         int slotId = 1;

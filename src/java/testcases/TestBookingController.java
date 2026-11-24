@@ -3,6 +3,8 @@ import controller.LoginController;
 import controller.BookingController;
 import model.Booking;
 import model.TimeSlot;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -24,7 +26,7 @@ public class TestBookingController {
             System.out.println("TEST 1: Student Login");
 
             boolean loginSuccessful = loginController.login(
-                    "620012345",
+                    "630014555",
                     "Test123"
             );
 

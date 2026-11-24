@@ -2,7 +2,10 @@ package testcases;
 import dao.TimeSlotDAO;
 import model.TimeSlot;
 
+
 import java.util.List;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestTimeSlotDAO {
 
