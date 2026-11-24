@@ -83,4 +83,14 @@ public class Booking {
     public Time getEndTime() {
         return endTime;
     }
+    @Override
+public String toString() {
+    return "Student ID: " + studentId
+            + " | Slot ID: " + slotID
+            + " | Machine ID: " + machineID
+            + " | Dryer ID: " + dryerID
+            + " | Date: " + slotDate
+            + " | Start Time: " + startTime
+            + " | End Time: " + endTime;
+}
 }

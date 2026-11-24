@@ -58,5 +58,16 @@ public class TimeSlot {
      public void setStatus(String status) {
         this.status = status;
     }
+
+    @Override
+public String toString() {
+    return "Slot ID: " + slotId
+            + " | Machine ID: " + machineId
+            + " | Dryer ID: " + dryerId
+            + " | Date: " + slotDate
+            + " | Start: " + startTime
+            + " | End: " + endTime
+            + " | Status: " + status;
+}
 }
 

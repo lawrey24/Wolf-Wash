@@ -204,6 +204,8 @@ public class StudentMenu {
             for (TimeSlot slot : availableSlots) {
                 System.out.println(slot);
             }
+            
+
 
             System.out.print("\nEnter the new slot ID: ");
 
