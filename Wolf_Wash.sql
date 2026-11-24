@@ -1,5 +1,5 @@
-DROP DATABASE IF EXISTS wolf_wash;
-CREATE DATABASE wolf_wash;
+/*DROP DATABASE IF EXISTS wolf_wash;*/
+/*CREATE DATABASE wolf_wash;*/
 USE wolf_wash;
 
 -- 1. Students Table

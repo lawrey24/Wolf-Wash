@@ -34,6 +34,7 @@ public class BookingService {
             String studentId, int slotId)
             throws SQLException {
 
+        // Validate student ID
         if (studentId == null ||
                 !studentId.matches("\\d{9}")) {
 
@@ -41,13 +42,15 @@ public class BookingService {
                     "Enter a valid 9-digit student ID.");
         }
 
+        // Validate slot ID
         if (slotId <= 0) {
+
             throw new IllegalArgumentException(
                     "Invalid time slot selected.");
         }
 
         try (Connection conn =
-                DatabaseConnection.getConnection()) {
+                     DatabaseConnection.getConnection()) {
 
             conn.setAutoCommit(false);
 
@@ -67,8 +70,8 @@ public class BookingService {
 
                     throw new IllegalArgumentException(
                             "You already have an active booking. "
-                            + "Please cancel or reschedule it "
-                            + "before making another booking.");
+                                    + "Please cancel or reschedule it "
+                                    + "before making another booking.");
                 }
 
                 // 3. Lock selected time slot
@@ -77,6 +80,7 @@ public class BookingService {
                                 conn, slotId);
 
                 if (slot == null) {
+
                     throw new IllegalArgumentException(
                             "Time slot does not exist.");
                 }
@@ -89,13 +93,13 @@ public class BookingService {
                             "Selected time slot is unavailable.");
                 }
 
-                // 5. Reject past time slots
-                LocalDateTime slotEnd =
+                // 5. Reject slots that have already started
+                LocalDateTime slotStart =
                         LocalDateTime.of(
                                 slot.getSlotDate(),
-                                slot.getEndTime());
+                                slot.getStartTime());
 
-                if (!slotEnd.isAfter(
+                if (!slotStart.isAfter(
                         LocalDateTime.now())) {
 
                     throw new IllegalArgumentException(
@@ -116,6 +120,7 @@ public class BookingService {
                                 conn, slotId);
 
                 if (!updated) {
+
                     throw new SQLException(
                             "Unable to update time slot.");
                 }
@@ -126,7 +131,7 @@ public class BookingService {
                 return booking;
 
             } catch (SQLException |
-                    RuntimeException e) {
+                     RuntimeException e) {
 
                 conn.rollback();
                 throw e;
@@ -134,3 +139,4 @@ public class BookingService {
         }
     }
 }
+

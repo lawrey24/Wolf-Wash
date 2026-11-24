@@ -1,51 +1,86 @@
+
 package model;
 
-import java.time.LocalDateTime;
+import java.sql.Date;
+import java.sql.Time;
 
 public class Booking {
 
     private String studentId;
-    private int slotId;
-    private String status;
-    private String paymentStatus;
-    private LocalDateTime createdAt;
+    private int slotID;
+    private int machineID;
+    private int dryerID;
+    private Date slotDate;
+    private Time startTime;
+    private Time endTime;
 
-    public Booking(String studentId, int slotId) {
+    // Original constructor - keeps compatibility with existing code
+    public Booking(int slotID, int machineID, int dryerID,
+                   Date slotDate, Time startTime, Time endTime) {
+
+        this.slotID = slotID;
+        this.machineID = machineID;
+        this.dryerID = dryerID;
+        this.slotDate = slotDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    // Constructor that also includes the student's ID
+    public Booking(String studentId, int slotID, int machineID,
+                   int dryerID, Date slotDate, Time startTime, Time endTime) {
+
         this.studentId = studentId;
-        this.slotId = slotId;
-        this.status = "ACTIVE";
-        this.paymentStatus = "UNPAID";
+        this.slotID = slotID;
+        this.machineID = machineID;
+        this.dryerID = dryerID;
+        this.slotDate = slotDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    public Booking(String studentId, int slotID) {
+    this.studentId = studentId;
+    this.slotID = slotID;
     }
 
     public String getStudentId() {
         return studentId;
     }
 
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
+    }
+
+    public int getSlotID() {
+        return slotID;
+    }
+
     public int getSlotId() {
-        return slotId;
+        return slotID;
     }
 
-    public String getStatus() {
-        return status;
+    public void setSlotID(int slotID) {
+        this.slotID = slotID;
     }
 
-    public String getPaymentStatus() {
-        return paymentStatus;
+    public int getMachineID() {
+        return machineID;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public int getDryerID() {
+        return dryerID;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public Date getSlotDate() {
+        return slotDate;
     }
 
-    public void setPaymentStatus(String paymentStatus) {
-        this.paymentStatus = paymentStatus;
+    public Time getStartTime() {
+        return startTime;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public Time getEndTime() {
+        return endTime;
     }
 }

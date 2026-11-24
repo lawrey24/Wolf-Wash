@@ -109,4 +109,26 @@ public class TimeSlotDAO {
         }
     }
 
+
+    // 4. Release a time slot after cancellation
+    public boolean releaseSlot(
+            Connection conn, int slotId)
+            throws SQLException {
+
+        String sql = """
+                UPDATE time_slots
+                SET status = 'AVAILABLE'
+                WHERE slot_id = ?
+                AND status = 'BOOKED'
+                """;
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, slotId);
+
+            return stmt.executeUpdate() == 1;
+        }
+    }
+
 }
