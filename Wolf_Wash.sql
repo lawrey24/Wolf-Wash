@@ -263,3 +263,7 @@ INSERT IGNORE INTO dryers (dryer_id, dryer_label, status) VALUES
 (8,  'Dryer 8',  'AVAILABLE'),
 (9,  'Dryer 9',  'AVAILABLE'),
 (10, 'Dryer 10', 'OUT_OF_SERVICE');
+
+UPDATE time_slots
+SET slot_date = '2026-11-26'
+WHERE slot_id > 0;
