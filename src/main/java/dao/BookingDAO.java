@@ -31,6 +31,30 @@ public class BookingDAO {
         }
     }
 
+    // Check whether student has an active booking
+    public boolean hasActiveBooking(
+            Connection conn, String studentId)
+            throws SQLException {
+
+        String sql = """
+                SELECT COUNT(*)
+                FROM bookings
+                WHERE student_id = ?
+                AND status = 'ACTIVE'
+                """;
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            stmt.setString(1, studentId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                rs.next();
+                return rs.getInt(1) > 0;
+            }
+        }
+    }
+
     // Insert booking into database
     public void createBooking(
             Connection conn, Booking booking)
@@ -52,4 +76,3 @@ public class BookingDAO {
         }
     }
 }
-

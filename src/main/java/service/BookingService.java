@@ -1,3 +1,4 @@
+
 package service;
 
 import dao.BookingDAO;
@@ -46,7 +47,7 @@ public class BookingService {
         }
 
         try (Connection conn =
-                     DatabaseConnection.getConnection()) {
+                DatabaseConnection.getConnection()) {
 
             conn.setAutoCommit(false);
 
@@ -60,7 +61,17 @@ public class BookingService {
                             "Student does not exist.");
                 }
 
-                // 2. Lock selected time slot
+                // 2. Check existing active booking
+                if (bookingDAO.hasActiveBooking(
+                        conn, studentId)) {
+
+                    throw new IllegalArgumentException(
+                            "You already have an active booking. "
+                            + "Please cancel or reschedule it "
+                            + "before making another booking.");
+                }
+
+                // 3. Lock selected time slot
                 TimeSlot slot =
                         timeSlotDAO.findSlotForUpdate(
                                 conn, slotId);
@@ -70,7 +81,7 @@ public class BookingService {
                             "Time slot does not exist.");
                 }
 
-                // 3. Check slot availability
+                // 4. Check slot availability
                 if (!"AVAILABLE".equals(
                         slot.getStatus())) {
 
@@ -78,7 +89,7 @@ public class BookingService {
                             "Selected time slot is unavailable.");
                 }
 
-                // 4. Reject past time slots
+                // 5. Reject past time slots
                 LocalDateTime slotEnd =
                         LocalDateTime.of(
                                 slot.getSlotDate(),
@@ -88,18 +99,18 @@ public class BookingService {
                         LocalDateTime.now())) {
 
                     throw new IllegalArgumentException(
-                            "Cannot book a slot that has already started/booked.");
+                            "Cannot book a slot that has already started.");
                 }
 
-                // 5. Create booking object
+                // 6. Create booking object
                 Booking booking =
                         new Booking(studentId, slotId);
 
-                // 6. Insert booking record
+                // 7. Insert booking record
                 bookingDAO.createBooking(
                         conn, booking);
 
-                // 7. Update time slot status
+                // 8. Update time slot status
                 boolean updated =
                         timeSlotDAO.markSlotAsBooked(
                                 conn, slotId);
@@ -109,13 +120,13 @@ public class BookingService {
                             "Unable to update time slot.");
                 }
 
-                // 8. Commit transaction
+                // 9. Commit transaction
                 conn.commit();
 
                 return booking;
 
             } catch (SQLException |
-                     RuntimeException e) {
+                    RuntimeException e) {
 
                 conn.rollback();
                 throw e;
