@@ -5,6 +5,7 @@ import controller.BookingController;
 import model.Booking;
 import model.TimeSlot;
 import service.Cancelation;
+import service.PaymentService;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -25,19 +26,28 @@ public class StudentMenu {
 
     public void showMenu(Scanner scanner, String studentId) {
 
+        PaymentService checkout = new PaymentService(studentId);
         while (true) {
+            checkout.deliverNotifications();
 
             System.out.println("\n================================");
             System.out.println("       WOLF WASH STUDENT MENU");
             System.out.println("================================");
             System.out.println("Student ID: " + studentId);
 
+            try {
+                System.out.println(checkout.balances());
+            } catch (SQLException e) {
+                System.out.println("Could not load balance: " + e.getMessage());
+            }
+
             System.out.println("\n1. Book a Time Slot");
             System.out.println("2. View My Bookings");
             System.out.println("3. View Available Time Slots");
             System.out.println("4. Reschedule Booking");
             System.out.println("5. Cancel Booking");
-            System.out.println("6. Logout");
+            System.out.println("6. Payments");
+            System.out.println("7. Logout");
 
             System.out.print("\nEnter your choice: ");
 
@@ -66,6 +76,9 @@ public class StudentMenu {
                     break;
 
                 case 6:
+                    new PaymentMenu(scanner, checkout).show();
+                    break;
+                case 7:
                     System.out.println("Logging out...");
                     return;
 
@@ -254,8 +267,21 @@ public class StudentMenu {
             return;
         }
 
-        String result = cancelationService.cancelBooking(
-                studentId, slotId);
+        String settlement = "";
+        try {
+            if (new PaymentService(studentId).paid(slotId)) {
+                System.out.println("1. Request refund (allow up to 3 days)");
+                System.out.println("2. Receive account credit immediately");
+                System.out.println("0. Keep booking");
+                int choice = promptForInt(scanner);
+                if (choice != 1 && choice != 2) return;
+                settlement = choice == 1 ? "REFUND_PENDING" : "CREDITED";
+            }
+        } catch (SQLException e) {
+            System.out.println("Could not check payment: " + e.getMessage());
+            return;
+        }
+        String result = cancelationService.cancelBooking(studentId, slotId, settlement);
 
         System.out.println(result);
     }
