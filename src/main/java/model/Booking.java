@@ -84,6 +84,7 @@ public class Booking {
         return endTime;
     }
     private String paymentStatus;
+    public String getPaymentStatus() { return paymentStatus; }
 
     public void setPaymentStatus(String status) { paymentStatus = status; }
 

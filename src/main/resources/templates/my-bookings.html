@@ -8,7 +8,7 @@
 
     <title>My Bookings | Wolf Wash</title>
 
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/student-dashboard.css}">
     <link rel="stylesheet" th:href="@{/css/booking.css}">
 </head>
 
@@ -89,6 +89,7 @@
 
                     </div>
 
+                    <p>Payment status: <strong th:text="${booking.paymentStatus}"></strong></p>
                     <div class="booking-actions">
 
                         <a class="reschedule-button"
@@ -104,6 +105,14 @@
                                    name="slotId"
                                    th:value="${booking.slotID}">
 
+                            <input type="hidden" name="formToken" th:value="${formToken}">
+                            <label th:if="${booking.paymentStatus == 'PAID'}">Paid cancellation
+                                <select name="settlement" required>
+                                    <option value="">Choose an option</option>
+                                    <option value="REFUND_PENDING">Refund (up to three days)</option>
+                                    <option value="CREDITED">Receive account credit</option>
+                                </select>
+                            </label>
                             <button type="submit" class="cancel-button">
                                 Cancel Booking
                             </button>

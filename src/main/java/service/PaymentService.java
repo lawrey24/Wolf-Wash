@@ -16,8 +16,11 @@ public class PaymentService {
         payments = new PaymentDAO(student);
     }
 
+    public String amountDue() throws SQLException { return payments.amountDue(); }
     public String balances() throws SQLException { return payments.balances(); }
     public List<String[]> unpaid() throws SQLException { return payments.unpaid(); }
+    public boolean removeCard(int cardId) throws SQLException { return payments.removeCard(cardId); }
+
     public List<String[]> cards() throws SQLException { return payments.cards(); }
     public List<String[]> history() throws SQLException { return payments.history(); }
     public boolean paid(int slot) throws SQLException { return payments.paid(slot); }

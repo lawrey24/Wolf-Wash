@@ -1,0 +1,41 @@
+.payment-page section,.receipt {background:white;padding:1.5rem;margin:1rem 0;border:1px solid #d9e2e9;border-radius:12px;overflow:auto}
+.payment-page form,.payment-page details {margin:1rem 0}
+.payment-page fieldset {display:grid;gap:.7rem;max-width:32rem;padding:1rem}
+.payment-page label {display:block}
+.payment-page input:not([type=checkbox]),.payment-page select {display:block;padding:.55rem;max-width:100%;margin:.3rem 0}
+.payment-page button,.receipt button {padding:.65rem 1rem;background:#006c70;color:white;border:0;border-radius:6px;cursor:pointer}
+.payment-page summary {cursor:pointer;color:#005e61}
+.payment-page th,.payment-page td {text-align:left;padding:.5rem}
+.receipt {max-width:36rem;margin:3rem auto;font-family:Arial,sans-serif}
+.receipt dt {font-weight:bold;margin-top:.75rem}
+.receipt dd {margin:.25rem 0}
+@media print {.receipt {border:none;margin:0}.receipt button,.receipt a {display:none}}
+
+.payment-page {color:#19344c}
+.payment-page h1,.receipt h1 {letter-spacing:-.035em}
+.payment-page h2 {font-size:1.35rem;margin:0 0 .85rem}
+.payment-page h3 {font-size:1rem;color:#40596e;margin:.4rem 0 1rem}
+.payment-page .balance {padding:1rem 1.2rem;margin-top:.6rem;border-left:4px solid #087b77;background:#e3f5ef;color:#144f4c;border-radius:0 10px 10px 0;white-space:pre-wrap;font-weight:600}
+.payment-page section {box-shadow:0 3px 14px #172b4d09}
+.methods {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13rem),1fr));gap:.75rem;align-items:start}
+.methods details {margin:0;border:1px solid #bedbd7;border-radius:.65rem;overflow:hidden}
+.methods summary {background:#edf8f5;color:#155952;padding:.85rem 1rem;font-weight:700;cursor:pointer}
+.methods details[open] summary {background:#d8f1ec}
+.methods form {padding:0 1rem}
+.payment-page button,.receipt button {font:inherit;font-weight:600}
+.payment-page fieldset {border:1px solid #cbd9dc;border-radius:8px;margin:.6rem 0}
+.payment-page fieldset input {width:100%;box-sizing:border-box}
+.card-row,.notice {display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.8rem .1rem;border-bottom:1px solid #e1e9ed;flex-wrap:wrap}
+.card-row small,.notice small {display:block;color:#536778;font-size:.85rem}
+.card-row form {margin:0}
+.payment-page .remove {color:#922d37;background:#fff5f5;border:1px solid #e9c3c7}
+.status-pill {display:inline-block;background:#e6f1f8;color:#244b66;border-radius:1em;padding:.2em .65em;font-weight:600}
+.payment-page a:not(.sidebar a),.receipt-actions a {color:#075e72}
+.receipt-page {margin:0;padding:1rem;background:#edf4f5;color:#183549}
+.receipt {box-sizing:border-box;border-top:5px solid #087b77;box-shadow:0 10px 32px #143c4812;padding:clamp(1.2rem,5vw,2.5rem)}
+.receipt h1 {margin:.3rem 0}.receipt dl {display:grid;grid-template-columns:1fr 1fr;margin:1.5rem 0}
+.receipt dt,.receipt dd {padding:.65rem 0;border-bottom:1px solid #deeaec;margin:0}.receipt dd {text-align:right}
+.receipt-actions {display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.receipt-actions a {font-weight:600;text-underline-offset:3px}
+.payment-page :focus-visible,.receipt :focus-visible {outline:3px solid #217eab;outline-offset:2px}
+@media print {.receipt-actions {display:none}.receipt-page,.receipt {background:white;box-shadow:none;padding:0}.receipt {border:none}}

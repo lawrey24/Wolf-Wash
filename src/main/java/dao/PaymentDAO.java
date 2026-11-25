@@ -28,6 +28,9 @@ public class PaymentDAO {
         return rows;
     }
 
+    public String amountDue() throws SQLException {
+        return rows("SELECT COALESCE(SUM(fee),0.00) FROM bookings WHERE student_id=? AND status='ACTIVE' AND payment_status='UNPAID'",student).get(0)[0];
+    }
     public String balances() throws SQLException {
         var totals=rows("SELECT balance,(SELECT COALESCE(SUM(fee),0.00) FROM bookings WHERE student_id=? AND status='ACTIVE' AND payment_status='UNPAID') FROM students WHERE student_id=?",student,student).get(0);
         return "Balance to be paid: JMD "+totals[1]+"    Available credit: JMD "+totals[0];
@@ -35,6 +38,13 @@ public class PaymentDAO {
     public List<String[]> unpaid() throws SQLException {
         return rows("SELECT booking_id,slot_id,fee FROM bookings WHERE student_id=? AND status='ACTIVE' AND payment_status='UNPAID'",student);
     }
+    public boolean removeCard(int cardId) throws SQLException {
+        try (var conn = DatabaseConnection.getConnection();
+             var statement = prepare(conn, "DELETE FROM saved_cards WHERE student_id=? AND card_id=?", student, cardId)) {
+            return statement.executeUpdate() == 1;
+        }
+    }
+
     public List<String[]> cards() throws SQLException {
         return rows("SELECT card_id,last_four,expiry FROM saved_cards WHERE student_id=? ORDER BY card_id",student);
     }

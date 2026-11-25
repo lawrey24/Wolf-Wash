@@ -1,0 +1,5 @@
+<!DOCTYPE html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Payment receipt | Wolf Wash</title><link rel="stylesheet" href="/css/payments.css"></head>
+<body class="receipt-page"><main class="receipt"><h1>Wolf Wash payment receipt</h1><p>Simulated transaction</p><dl>
+<dt>Receipt number</dt><dd th:text="${payment[0]}"></dd><dt>Booking number</dt><dd th:text="${payment[1]}"></dd><dt>Date paid</dt><dd th:text="${payment[2]}"></dd>
+<dt>Amount paid</dt><dd th:text="|JMD ${payment[3]}|"></dd><dt>Payment method</dt><dd th:text="${payment[4]}"></dd><dt>Current status</dt><dd th:text="${payment[5]}"></dd></dl>
+<nav class="receipt-actions"><button onclick="window.print()">Print receipt</button><a href="/student/payments">← Back to payments</a></nav></main></body></html>

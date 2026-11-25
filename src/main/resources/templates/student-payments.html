@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payments | Wolf Wash</title><link rel="stylesheet" href="/css/student-dashboard.css"><link rel="stylesheet" href="/css/payments.css"></head>
+<body><div class="dashboard-container">
+<aside class="sidebar"><h2>WOLF <span>WASH</span></h2><nav>
+<a href="/student/dashboard">Dashboard</a><a href="/student/book">Book a Time Slot</a><a href="/student/bookings">My Bookings</a>
+<a href="/student/payments" class="active">Payments</a><a href="/logout">Logout</a></nav></aside>
+<main class="main-content payment-page"><h1>Payments</h1>
+<p role="status" th:if="${success}" th:text="${success}"></p><p role="alert" th:if="${error}" th:text="${error}"></p>
+<div th:if="${ready}"><p class="balance" th:text="${balances}"></p>
+<section><h2>Current booking</h2><p th:if="${#lists.isEmpty(bookings)}">You have no unpaid bookings.</p>
+<article th:each="b : ${bookings}"><h3 th:text="|Booking #${b[0]} · Slot ${b[1]} · JMD ${b[2]}|"></h3>
+<div class="methods"><details th:if="${!#lists.isEmpty(cards)}"><summary>Saved card</summary><form action="/student/payments" method="post">
+<input type="hidden" name="formToken" th:value="${formToken}"><input type="hidden" name="bookingId" th:value="${b[0]}">
+<label>Saved card<select name="cardId" required><option th:each="c : ${cards}" th:value="${c[0]}" th:text="|Card #${c[0]} · ending in ${c[1]} · expires ${c[2]}|"></option></select></label>
+<button name="method" value="saved">Pay with saved card</button></form></details>
+<details><summary>New card</summary><form action="/student/payments" method="post">
+<input type="hidden" name="formToken" th:value="${formToken}"><input type="hidden" name="bookingId" th:value="${b[0]}">
+<div th:replace="~{student-payments :: cardFields}"></div><label><input type="checkbox" name="save" value="true"> Save for future bookings</label>
+<button name="method" value="new">Confirm card payment</button></form></details>
+<details><summary>Account credit</summary><form action="/student/payments" method="post"><input type="hidden" name="formToken" th:value="${formToken}"><input type="hidden" name="bookingId" th:value="${b[0]}">
+<button name="method" value="credit">Pay with account credit</button></form></details></div></article></section>
+<section><h2>Saved cards</h2><p th:if="${#lists.isEmpty(cards)}">No saved cards yet.</p><div class="card-row" th:each="c : ${cards}">
+<div><strong th:text="|Card ending in ${c[1]}|"></strong><small th:text="|Card #${c[0]} · Expires ${c[2]}|"></small></div>
+<form method="post" th:action="@{/student/payments/cards/remove}" onsubmit="return confirm('Remove this saved card?');">
+<input type="hidden" name="formToken" th:value="${formToken}"><input type="hidden" name="cardId" th:value="${c[0]}">
+<button class="remove" type="submit" th:attr="aria-label=|Remove card ending in ${c[1]}|">Remove card</button>
+</form></div>
+<details><summary>Add a card</summary><form action="/student/payments" method="post"><input type="hidden" name="formToken" th:value="${formToken}">
+<fieldset th:fragment="cardFields"><legend>Fictional card details only</legend><label>Billing address<input name="address" required></label>
+<label>Card number<input name="number" inputmode="numeric" placeholder="16 digits" autocomplete="off" required></label>
+<label>Security code<input name="code" type="password" inputmode="numeric" pattern="[0-9]{3}" maxlength="3" autocomplete="off" required></label>
+<label>Expiry date<input name="expiry" type="month" required></label><label>Telephone number<input name="phone" type="tel" required></label></fieldset>
+<button name="method" value="add">Save card</button></form></details></section>
+<section><h2>Payment history</h2><p th:if="${#lists.isEmpty(history)}">No payments yet.</p>
+<table th:unless="${#lists.isEmpty(history)}"><thead><tr><th>Booking</th><th>Date</th><th>JMD</th><th>Method</th><th>Status</th><th>Receipt</th></tr></thead>
+<tbody><tr th:each="r : ${history}"><td th:text="${r[1]}"></td><td th:text="${r[2]}"></td><td th:text="${r[3]}"></td><td th:text="${r[4]}"></td><td><span class="status-pill" th:text="${r[5]}"></span></td>
+<td><a th:href="@{/student/payments/receipt/{id}(id=${r[0]})}">View receipt</a></td></tr></tbody></table></section>
+<section><h2>Notification log</h2><p th:if="${#lists.isEmpty(notifications)}">No notifications yet.</p>
+<div class="notice" th:each="n : ${notifications}"><span th:text="${n[1]}"></span><small th:text="|${n[2]} · ${n[3]}|"></small></div></section></div></main></div></body></html>
