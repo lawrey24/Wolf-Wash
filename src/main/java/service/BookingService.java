@@ -125,7 +125,16 @@ public class BookingService {
                             "Unable to update time slot.");
                 }
 
-                // 9. Commit transaction
+                try (var stmt=conn.prepareStatement("SELECT booking_id, fee FROM bookings WHERE student_id=? AND slot_id=? AND status='ACTIVE'")) {
+                    stmt.setString(1,studentId);
+                    stmt.setInt(2,slotId);
+                    try(var row=stmt.executeQuery()) {
+                        if(!row.next()) throw new SQLException("New booking missing.");
+                        dao.PaymentNotifications.queue(conn,studentId,row.getInt(1),"AMOUNT_DUE",
+                                "Booking confirmed. Amount due JMD " + row.getBigDecimal(2));
+                    }
+                }
+                // Commit booking and notification together
                 conn.commit();
 
                 return booking;
