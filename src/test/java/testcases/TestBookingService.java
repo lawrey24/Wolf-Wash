@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBookingService {
 
-    private final String studentId = "230100010";
+    private final String studentId = "230100080";
     private final String password = "Test123";
 
     private final int firstSlot = 3;
