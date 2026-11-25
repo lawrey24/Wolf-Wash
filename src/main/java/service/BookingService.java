@@ -17,6 +17,7 @@ public class BookingService {
     private final BookingDAO bookingDAO;
     private final TimeSlotDAO timeSlotDAO;
 
+
     public BookingService() {
         bookingDAO = new BookingDAO();
         timeSlotDAO = new TimeSlotDAO();

@@ -1,0 +1,232 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Dashboard | Wolf Wash</title>
+
+    <link rel="stylesheet" href="/css/student-dashboard.css">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <h2>WOLF <span>WASH</span></h2>
+
+        <p class="tagline">CLEAN • FRESH • ON TIME</p>
+
+        <nav>
+            <a href="/student/dashboard" class="active">
+                Dashboard
+            </a>
+
+            <a href="/student/book">
+                Book a Time Slot
+            </a>
+
+            <a th:href="@{/student/bookings}">
+              My Bookings
+             </a>
+
+            <a href="/student/payments">
+                Payments
+            </a>
+
+            <a href="/student/support">
+                Help & Support
+            </a>
+
+            <a href="/logout">
+                Logout
+            </a>
+        </nav>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+        <header class="top-bar">
+
+            <span>Student Portal</span>
+
+            <span class="student-profile">
+                Student Account
+            </span>
+
+        </header>
+
+
+        <!-- WELCOME SECTION -->
+        <section class="welcome">
+
+            <h1>
+                Welcome back,
+                <span th:text="${studentName != null ? studentName : 'Student'}">
+                    Student
+                </span>!
+            </h1>
+
+            <p>
+                Manage your bookings and account below.
+            </p>
+
+        </section>
+
+
+        <!-- DASHBOARD ERROR MESSAGE -->
+        <div th:if="${dashboardError != null}"
+             class="dashboard-section">
+
+            <p th:text="${dashboardError}"></p>
+
+        </div>
+
+
+        <!-- SUMMARY CARDS -->
+        <section class="stats">
+
+            <div class="stat-card">
+
+                <h3>My Bookings</h3>
+
+                <p th:text="${activeBookings != null ? activeBookings : 0}">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>Next Appointment</h3>
+
+                <p th:text="${upcomingAppointment != null ? upcomingAppointment : 'None'}">
+                    None
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <h3>Amount Due</h3>
+
+                <p th:text="${amountDue != null ? amountDue : '0.00'}">
+                    0.00
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- RECENT BOOKINGS -->
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+
+                <h2>My Recent Bookings</h2>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Booking Date</th>
+                            <th>Machine</th>
+                            <th>Dryer</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                        </tr>
+                    </thead>
+
+
+                    <tbody>
+
+                        <!-- No bookings -->
+                        <tr th:if="${recentBookings == null or #lists.isEmpty(recentBookings)}">
+
+                            <td colspan="5">
+                                No bookings available yet.
+                            </td>
+
+                        </tr>
+
+
+                        <!-- Display student bookings -->
+                        <tr th:each="booking : ${recentBookings}">
+
+                            <td th:text="${booking.slotDate}">
+                                Date
+                            </td>
+
+                            <td th:text="${booking.machineID}">
+                                Machine
+                            </td>
+
+                            <td th:text="${booking.dryerID}">
+                                Dryer
+                            </td>
+
+                            <td th:text="${booking.startTime}">
+                                Start Time
+                            </td>
+
+                            <td th:text="${booking.endTime}">
+                                End Time
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- QUICK ACTIONS -->
+        <section class="dashboard-section">
+
+            <h2>Quick Actions</h2>
+
+            <div class="quick-actions">
+
+                <a href="/student/book"
+                   class="book-button">
+                    Book a Time Slot
+                </a>
+
+
+                <a href="/student/payments"
+                   class="payment-button">
+                    Make a Payment
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>
+

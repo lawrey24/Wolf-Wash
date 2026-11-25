@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Bookings | Wolf Wash</title>
+
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/booking.css}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <h2>WOLF WASH</h2>
+
+        <nav>
+            <a th:href="@{/student/dashboard}">Dashboard</a>
+            <a th:href="@{/student/book}">Book a Time Slot</a>
+            <a th:href="@{/student/bookings}" class="active">My Bookings</a>
+            <a th:href="@{/student/payments}">Payments</a>
+            <a th:href="@{/student/support}">Help & Support</a>
+            <a th:href="@{/logout}">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <section class="booking-heading">
+            <h1>My Bookings</h1>
+            <p>View, cancel or reschedule your laundry appointments.</p>
+        </section>
+
+        <div class="message success-message"
+             th:if="${success}"
+             th:text="${success}">
+        </div>
+
+        <div class="message error-message"
+             th:if="${bookingError}"
+             th:text="${bookingError}">
+        </div>
+
+        <section class="slots-section">
+
+            <div class="slots-header">
+                <h2>Your Appointments</h2>
+            </div>
+
+            <div class="slots-grid"
+                 th:if="${not #lists.isEmpty(bookings)}">
+
+                <div class="slot-card"
+                     th:each="booking : ${bookings}">
+
+                    <div class="slot-card-header">
+                        <h3 th:text="${booking.slotDate}">Booking Date</h3>
+                        <span class="available-label">Active</span>
+                    </div>
+
+                    <div class="slot-details">
+
+                        <p>
+                            <strong>Time:</strong>
+                            <span th:text="${booking.startTime}"></span>
+                            -
+                            <span th:text="${booking.endTime}"></span>
+                        </p>
+
+                        <p>
+                            <strong>Machine:</strong>
+                            <span th:text="${booking.machineID}"></span>
+                        </p>
+
+                        <p>
+                            <strong>Dryer:</strong>
+                            <span th:text="${booking.dryerID}"></span>
+                        </p>
+
+                        <p>
+                            <strong>Slot ID:</strong>
+                            <span th:text="${booking.slotID}"></span>
+                        </p>
+
+                    </div>
+
+                    <div class="booking-actions">
+
+                        <a class="reschedule-button"
+                           th:href="@{/student/reschedule(slotId=${booking.slotID})}">
+                            Reschedule
+                        </a>
+
+                        <form th:action="@{/student/cancel-booking}"
+                              method="post"
+                              onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+
+                            <input type="hidden"
+                                   name="slotId"
+                                   th:value="${booking.slotID}">
+
+                            <button type="submit" class="cancel-button">
+                                Cancel Booking
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="no-slots"
+                 th:if="${#lists.isEmpty(bookings)}">
+
+                <h3>No Active Bookings</h3>
+
+                <p>You currently have no active laundry appointments.</p>
+
+                <a th:href="@{/student/book}" class="book-button">
+                    Book a Time Slot
+                </a>
+
+            </div>
+
+        </section>
+
+        <a th:href="@{/student/dashboard}" class="back-link">
+            Back to Dashboard
+        </a>
+
+    </main>
+
+</div>
+
+</body>
+</html>

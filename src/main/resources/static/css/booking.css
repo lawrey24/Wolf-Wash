@@ -1,0 +1,147 @@
+
+.booking-heading {
+    margin: 25px 0;
+}
+
+.booking-heading h1 {
+    color: #172b4d;
+    margin-bottom: 8px;
+}
+
+.booking-heading p {
+    color: #68778d;
+}
+
+.slots-section {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+
+.slots-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.slots-header h2 {
+    color: #172b4d;
+}
+
+.slots-header span {
+    color: #079b9b;
+    font-weight: bold;
+}
+
+.slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.slot-card {
+    border: 1px solid #e5eaf0;
+    border-radius: 12px;
+    padding: 20px;
+    background: #ffffff;
+    transition: transform 0.2s ease;
+}
+
+.slot-card:hover {
+    transform: translateY(-3px);
+}
+
+.slot-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.slot-card-header h3 {
+    color: #172b4d;
+}
+
+.available-label {
+    background: #e1f7f3;
+    color: #078b7d;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.slot-details p {
+    margin: 12px 0;
+    color: #58677c;
+    font-size: 14px;
+}
+
+.slot-details strong {
+    color: #172b4d;
+}
+
+.book-button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background: #079b9b;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.book-button:hover {
+    background: #067f83;
+}
+
+.no-slots {
+    text-align: center;
+    padding: 45px 15px;
+    color: #68778d;
+}
+
+.no-slots h3 {
+    color: #172b4d;
+    margin-bottom: 10px;
+}
+
+.message {
+    padding: 13px 18px;
+    margin-bottom: 20px;
+    border-radius: 7px;
+}
+
+.success-message {
+    background: #e1f7f3;
+    color: #087c6e;
+}
+
+.error-message {
+    background: #fdeaea;
+    color: #b42318;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 25px;
+    color: #078f91;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    .slots-section {
+        padding: 15px;
+    }
+
+    .slots-header {
+        align-items: flex-start;
+        gap: 10px;
+        flex-direction: column;
+    }
+}

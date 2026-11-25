@@ -1,0 +1,179 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #263746;
+    background: #eaf7f7;
+}
+
+/* NAVIGATION */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 8%;
+    background: #142b4a;
+}
+
+.logo {
+    color: #ffffff;
+    font-size: 28px;
+    letter-spacing: 2px;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 25px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.nav-links a:hover {
+    color: #f5c542;
+}
+
+/* HERO SECTION */
+.hero {
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    padding: 70px 8%;
+    background:
+        linear-gradient(rgba(20, 43, 74, 0.45),
+                        rgba(20, 43, 74, 0.45)),
+        url('/images/laundromat_homepage.webp');
+
+    background-size: cover;
+    background-position: center;
+    color: white;
+}
+
+.hero-content {
+    max-width: 650px;
+}
+
+.hero h2 {
+    font-size: 52px;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 19px;
+    line-height: 1.7;
+    margin-bottom: 30px;
+}
+
+/* BUTTON */
+.btn {
+    display: inline-block;
+    background: #f5c542;
+    color: #142b4a;
+    padding: 15px 30px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: white;
+    transform: translateY(-3px);
+}
+
+/* SERVICES */
+.services {
+    padding: 75px 8%;
+    text-align: center;
+}
+
+.services h2,
+.about h2 {
+    font-size: 34px;
+    color: #142b4a;
+    margin-bottom: 35px;
+}
+
+.service-container {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.service-card {
+    background: white;
+    padding: 35px 25px;
+    border-radius: 15px;
+    width: 280px;
+    box-shadow: 0 5px 20px rgba(20, 43, 74, 0.12);
+    border-bottom: 5px solid #16b8a6;
+    transition: 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+}
+
+.service-card h3 {
+    color: #087f8c;
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+.service-card p {
+    line-height: 1.7;
+}
+
+/* ABOUT */
+.about {
+    background: #ffffff;
+    padding: 75px 8%;
+    text-align: center;
+}
+
+.about p {
+    max-width: 700px;
+    margin: auto;
+    line-height: 1.8;
+    font-size: 17px;
+}
+
+/* FOOTER */
+footer {
+    background: #142b4a;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+
+/* MOBILE */
+@media (max-width: 700px) {
+    .navbar {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .hero h2 {
+        font-size: 36px;
+    }
+
+    .hero {
+        min-height: 400px;
+    }
+}

@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reschedule Booking | Wolf Wash</title>
+
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/booking.css}">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <h2>WOLF WASH</h2>
+
+        <nav>
+            <a th:href="@{/student/dashboard}">Dashboard</a>
+            <a th:href="@{/student/book}">Book a Time Slot</a>
+            <a th:href="@{/student/bookings}" class="active">My Bookings</a>
+            <a th:href="@{/student/payments}">Payments</a>
+            <a th:href="@{/student/support}">Help & Support</a>
+            <a th:href="@{/logout}">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <section class="booking-heading">
+            <h1>Reschedule Booking</h1>
+            <p>Select an available time slot for your new appointment.</p>
+        </section>
+
+        <div class="message success-message"
+             th:if="${success}"
+             th:text="${success}">
+        </div>
+
+        <div class="message error-message"
+             th:if="${bookingError}"
+             th:text="${bookingError}">
+        </div>
+
+        <section class="slots-section">
+
+            <div class="slots-header">
+                <h2>Available Time Slots</h2>
+            </div>
+
+            <div class="slots-grid" th:if="${not #lists.isEmpty(availableSlots)}">
+
+                <div class="slot-card" th:each="slot : ${availableSlots}">
+
+                    <div class="slot-card-header">
+                        <h3 th:text="${slot.slotDate}">Date</h3>
+                        <span class="available-label">Available</span>
+                    </div>
+
+                    <div class="slot-details">
+                        <p>
+                            <strong>Time:</strong>
+                            <span th:text="${slot.startTime}"></span>
+                            -
+                            <span th:text="${slot.endTime}"></span>
+                        </p>
+
+                        <p>
+                            <strong>Machine:</strong>
+                            <span th:text="${slot.machineId}"></span>
+                        </p>
+
+                        <p>
+                            <strong>Dryer:</strong>
+                            <span th:text="${slot.dryerId}"></span>
+                        </p>
+                    </div>
+
+                    <form th:action="@{/student/reschedule}" method="post">
+
+                        <input type="hidden"
+                               name="oldSlotId"
+                               th:value="${oldSlotId}">
+
+                        <input type="hidden"
+                               name="newSlotId"
+                               th:value="${slot.slotId}">
+
+                        <button type="submit" class="book-button">
+                            Confirm New Slot
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <div class="no-slots" th:if="${#lists.isEmpty(availableSlots)}">
+                <h3>No Available Slots</h3>
+                <p>There are currently no available time slots for rescheduling.</p>
+            </div>
+
+        </section>
+
+        <a th:href="@{/student/bookings}" class="back-link">
+            Back to My Bookings
+        </a>
+
+    </main>
+
+</div>
+
+</body>
+</html>

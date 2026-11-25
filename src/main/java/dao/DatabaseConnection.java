@@ -1,4 +1,3 @@
-
 package dao;
 
 import java.sql.Connection;
@@ -30,4 +29,3 @@ public class DatabaseConnection {
                 URL, USER, PASSWORD);
     }
 }
-
