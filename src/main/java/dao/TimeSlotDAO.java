@@ -1,26 +1,33 @@
 package dao;
 
-import model.TimeSlot;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.TimeSlot;
+
 public class TimeSlotDAO {
 
-    // 1. Retrieve all available future time slots
+    // 1. Retrieve all available future time slots for active machines/dryers
     public List<TimeSlot> getAvailableSlots()
             throws SQLException {
 
         List<TimeSlot> slots = new ArrayList<>();
 
         String sql = """
-                SELECT slot_id, machine_id, dryer_id,
-                       slot_date, start_time, end_time, status
-                FROM time_slots
-                WHERE status = 'AVAILABLE'
-                AND TIMESTAMP(slot_date, start_time) > NOW()
-                ORDER BY slot_date, start_time
+                SELECT ts.slot_id, ts.machine_id, ts.dryer_id,
+                       ts.slot_date, ts.start_time, ts.end_time, ts.status
+                FROM time_slots ts
+                LEFT JOIN machines m ON ts.machine_id = m.machine_id
+                LEFT JOIN dryers d ON ts.dryer_id = d.dryer_id
+                WHERE ts.status = 'AVAILABLE'
+                AND TIMESTAMP(ts.slot_date, ts.start_time) > NOW()
+                AND (m.machine_id IS NULL OR m.status <> 'OUT_OF_SERVICE')
+                AND (d.dryer_id IS NULL OR d.status <> 'OUT_OF_SERVICE')
+                ORDER BY ts.slot_date, ts.start_time
                 """;
 
         try (Connection conn =

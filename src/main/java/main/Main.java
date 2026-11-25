@@ -1,12 +1,14 @@
 package main;
 
-import controller.LoginController;
-import controller.BookingController;
-import service.Cancelation;
-import view.StudentMenu;
-
 import java.sql.SQLException;
 import java.util.Scanner;
+
+import controller.AdminController;
+import controller.BookingController;
+import controller.LoginController;
+import service.Cancelation;
+import view.AdminMenu;
+import view.StudentMenu;
 
 public class Main {
 
@@ -23,6 +25,9 @@ public class Main {
         StudentMenu studentMenu =
                 new StudentMenu(bookingController, cancelationService);
 
+        AdminController adminController = new AdminController();
+        AdminMenu adminMenu = new AdminMenu(adminController);
+
         // Start the application
         try (Scanner scanner = new Scanner(System.in)) {
 
@@ -36,16 +41,15 @@ public class Main {
 
                 System.out.println("\n========== MAIN MENU ==========");
                 System.out.println("1. Student Login");
-                System.out.println("2. Exit");
+                System.out.println("2. Admin Login");
+                System.out.println("3. Exit");
 
                 System.out.print("\nChoose an option: ");
 
                 String choice = scanner.nextLine().trim();
 
                 switch (choice) {
-
-                    case "1":
-
+                    case "1" -> {
                         System.out.print("Enter Student ID: ");
                         String studentId = scanner.nextLine().trim();
 
@@ -86,26 +90,20 @@ public class Main {
                                     "Login error: " + e.getMessage()
                             );
                         }
-
-                        break;
-
-                    case "2":
-
+                    }
+                    case "2" -> adminMenu.showMenu(scanner);
+                    case "3" -> {
                         System.out.println(
                                 "\nThank you for using Wolf Wash!"
                         );
 
                         running = false;
-
-                        break;
-
-                    default:
-
+                    }
+                    default -> {
                         System.out.println(
-                                "Invalid option. Please choose 1 or 2."
+                                "Invalid option. Please choose 1, 2, or 3."
                         );
-
-                        break;
+                    }
                 }
             }
 

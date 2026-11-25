@@ -1,16 +1,17 @@
-
 package service;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import dao.BookingDAO;
 import dao.DatabaseConnection;
 import dao.TimeSlotDAO;
 import model.Booking;
 import model.TimeSlot;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.List;
 
 public class BookingService {
 
@@ -93,6 +94,13 @@ public class BookingService {
                             "Selected time slot is unavailable.");
                 }
 
+                // 4b. Check washer/dryer status
+                if (isMachineOutOfService(conn, slot)) {
+
+                    throw new IllegalArgumentException(
+                            "Selected machine or dryer is out of service.");
+                }
+
                 // 5. Reject slots that have already started
                 LocalDateTime slotStart =
                         LocalDateTime.of(
@@ -138,5 +146,36 @@ public class BookingService {
             }
         }
     }
-}
 
+    private boolean isMachineOutOfService(Connection conn, TimeSlot slot)
+            throws SQLException {
+
+        if (slot.getMachineId() > 0) {
+            String sql = "SELECT status FROM machines WHERE machine_id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, slot.getMachineId());
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()
+                            && "OUT_OF_SERVICE".equalsIgnoreCase(rs.getString("status"))) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        if (slot.getDryerId() > 0) {
+            String sql = "SELECT status FROM dryers WHERE dryer_id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, slot.getDryerId());
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()
+                            && "OUT_OF_SERVICE".equalsIgnoreCase(rs.getString("status"))) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+}
