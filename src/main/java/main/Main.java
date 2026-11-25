@@ -4,6 +4,8 @@ import controller.LoginController;
 import controller.BookingController;
 import service.Cancelation;
 import view.StudentMenu;
+import controller.IssueManagementController;
+import view.IssueManagementMenu;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -36,7 +38,8 @@ public class Main {
 
                 System.out.println("\n========== MAIN MENU ==========");
                 System.out.println("1. Student Login");
-                System.out.println("2. Exit");
+                System.out.println("2. Admin Issue Management");
+                System.out.println("3. Exit");
 
                 System.out.print("\nChoose an option: ");
 
@@ -90,19 +93,18 @@ public class Main {
                         break;
 
                     case "2":
+                        new IssueManagementMenu(new IssueManagementController()).loginAndShow(scanner);
+                        break;
 
-                        System.out.println(
-                                "\nThank you for using Wolf Wash!"
-                        );
-
+                    case "3":
+                        System.out.println("\nThank you for using Wolf Wash!");
                         running = false;
-
                         break;
 
                     default:
 
                         System.out.println(
-                                "Invalid option. Please choose 1 or 2."
+                                "Invalid option. Please choose 1, 2 or 3."
                         );
 
                         break;
