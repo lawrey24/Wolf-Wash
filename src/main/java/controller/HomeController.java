@@ -15,4 +15,10 @@ public class HomeController {
     public String loginPage() {
         return "login";
     }
+
+    @GetMapping("/admin-login")
+    public String adminLoginPage() {
+        return "admin-login";
+    }
+
 }
