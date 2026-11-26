@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Machine Monitoring | Wolf Wash</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script defer th:src="@{/js/admin-equipment.js}"></script>
+</head>
+<body>
+<div class="admin-dashboard">
+    <header class="admin-header">
+        <h1>WOLF <span>WASH</span></h1>
+        <a th:href="@{/admin/logout}">Logout</a>
+    </header>
+    <main class="admin-main">
+        <section class="admin-welcome">
+            <h2>Machine Monitoring</h2>
+            <p>View and update washer and dryer service status.</p>
+            <a class="admin-action admin-action-secondary" th:href="@{/admin/dashboard}">Back to Admin Dashboard</a>
+        </section>
+        <p class="admin-alert" role="alert" th:if="${error}" th:text="${error}"></p>
+        <div class="equipment-grid" th:if="${washers != null and dryers != null}">
+            <section th:replace="~{fragments/admin-equipment :: column('Washers', ${washers})}"></section>
+            <section th:replace="~{fragments/admin-equipment :: column('Dryers', ${dryers})}"></section>
+        </div>
+    </main>
+</div>
+</body>
+</html>

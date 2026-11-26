@@ -1,0 +1,32 @@
+<section th:fragment="column(title, equipment)">
+    <h2 th:text="${title}"></h2>
+    <p th:if="${#lists.isEmpty(equipment)}">No equipment registered.</p>
+    <article class="feedback-card equipment-card" th:each="item : ${equipment}"
+             th:with="card=|${item.machineType}-${item.id}|, active=${card == machineCard}, failed=${active and machineError != null}, selected=${failed ? submittedStatus : item.status}"
+             th:id="${card}">
+        <h3 th:text="${item.label}"></h3>
+        <p>Service status: <strong th:text="${item.status == 'OUT_OF_SERVICE' ? 'Out of Service' : 'Available'}"></strong></p>
+        <p th:if="${item.outOfServiceReason}" th:text="${item.outOfServiceReason}"></p>
+        <form th:action="@{/admin/machines}" method="post">
+            <input type="hidden" name="formToken" th:value="${formToken}">
+            <input type="hidden" name="id" th:value="${item.id}">
+            <input type="hidden" name="type" th:value="${item.machineType}">
+            <label th:for="|${card}-status|">Status</label>
+            <select name="status" th:id="|${card}-status|"
+                    th:attr="aria-invalid=${failed and machineErrorField == 'status'},aria-describedby=${failed and machineErrorField == 'status' ? card + '-error' : null}">
+                <option value="AVAILABLE" th:selected="${selected == 'AVAILABLE'}">Available</option>
+                <option value="OUT_OF_SERVICE" th:selected="${selected == 'OUT_OF_SERVICE'}">Out of Service</option>
+            </select>
+            <p class="equipment-error" role="alert" th:if="${failed and machineErrorField == 'status'}"
+               th:id="|${card}-error|" th:text="${machineError}"></p>
+            <label th:for="|${card}-reason|">Out-of-service reason</label>
+            <input name="reason" maxlength="255" th:id="|${card}-reason|"
+                   th:value="${failed ? submittedReason : item.outOfServiceReason}"
+                   th:attr="aria-invalid=${failed and machineErrorField == 'reason'},aria-describedby=${failed and machineErrorField == 'reason' ? card + '-error' : null}">
+            <p class="equipment-error" role="alert" th:if="${failed and machineErrorField != 'status'}"
+               th:id="|${card}-error|" th:text="${machineError}"></p>
+            <p class="equipment-success" role="status" th:if="${active and machineSuccess != null}" th:text="${machineSuccess}"></p>
+            <button type="submit">Save status</button>
+        </form>
+    </article>
+</section>
