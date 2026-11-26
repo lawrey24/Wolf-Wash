@@ -3,10 +3,10 @@
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Payments | Wolf Wash</title><link rel="stylesheet" href="/css/student-dashboard.css"><link rel="stylesheet" href="/css/payments.css"></head>
 <body><div class="dashboard-container">
-<aside class="sidebar"><h2>WOLF <span>WASH</span></h2><nav>
-<a href="/student/dashboard">Dashboard</a><a href="/student/book">Book a Time Slot</a><a href="/student/bookings">My Bookings</a>
-<a href="/student/payments" class="active">Payments</a><a href="/logout">Logout</a></nav></aside>
-<main class="main-content payment-page"><h1>Payments</h1>
+<div th:replace="~{fragments/student-portal :: sidebar('payments')}"></div>
+<main class="main-content payment-page">
+        <div th:replace="~{fragments/student-portal :: topBar}"></div>
+<h1>Payments</h1>
 <p role="status" th:if="${success}" th:text="${success}"></p><p role="alert" th:if="${error}" th:text="${error}"></p>
 <div th:if="${ready}"><p class="balance" th:text="${balances}"></p>
 <section><h2>Current booking</h2><p th:if="${#lists.isEmpty(bookings)}">You have no unpaid bookings.</p>
@@ -15,7 +15,8 @@
 <input type="hidden" name="formToken" th:value="${formToken}"><input type="hidden" name="bookingId" th:value="${b[0]}">
 <label>Saved card<select name="cardId" required><option th:each="c : ${cards}" th:value="${c[0]}" th:text="|Card #${c[0]} · ending in ${c[1]} · expires ${c[2]}|"></option></select></label>
 <button name="method" value="saved">Pay with saved card</button></form></details>
-<details><summary>New card</summary><form action="/student/payments" method="post">
+<details th:id="|new-card-${b[0]}|" th:with="showErrors=${cardErrorMethod == 'new' and #strings.toString(cardErrorBookingId) == b[0]}" th:open="${showErrors}">
+<summary>New card</summary><form action="/student/payments" method="post" th:with="fieldErrors=${showErrors ? cardErrors : null}">
 <input type="hidden" name="formToken" th:value="${formToken}"><input type="hidden" name="bookingId" th:value="${b[0]}">
 <div th:replace="~{student-payments :: cardFields}"></div><label><input type="checkbox" name="save" value="true"> Save for future bookings</label>
 <button name="method" value="new">Confirm card payment</button></form></details>
@@ -27,11 +28,32 @@
 <input type="hidden" name="formToken" th:value="${formToken}"><input type="hidden" name="cardId" th:value="${c[0]}">
 <button class="remove" type="submit" th:attr="aria-label=|Remove card ending in ${c[1]}|">Remove card</button>
 </form></div>
-<details><summary>Add a card</summary><form action="/student/payments" method="post"><input type="hidden" name="formToken" th:value="${formToken}">
-<fieldset th:fragment="cardFields"><legend>Fictional card details only</legend><label>Billing address<input name="address" required></label>
-<label>Card number<input name="number" inputmode="numeric" placeholder="16 digits" autocomplete="off" required></label>
-<label>Security code<input name="code" type="password" inputmode="numeric" pattern="[0-9]{3}" maxlength="3" autocomplete="off" required></label>
-<label>Expiry date<input name="expiry" type="month" required></label><label>Telephone number<input name="phone" type="tel" required></label></fieldset>
+<details id="add-card" th:open="${cardErrorMethod == 'add'}"><summary>Add a card</summary>
+<form action="/student/payments" method="post" th:with="fieldErrors=${cardErrorMethod == 'add' ? cardErrors : null}"><input type="hidden" name="formToken" th:value="${formToken}">
+<fieldset th:fragment="cardFields">
+    <legend>Fictional card details only</legend>
+    <p class="card-field-error" role="alert" th:if="${fieldErrors != null}">Correct the highlighted fields and re-enter the card details.</p>
+    <label>Billing address
+        <input name="address" autocomplete="off" maxlength="200" required th:attr="aria-invalid=${fieldErrors != null and fieldErrors.containsKey('address')}">
+        <span class="card-field-error" th:if="${fieldErrors != null and fieldErrors.containsKey('address')}" th:text="${fieldErrors.get('address')}"></span>
+    </label>
+    <label>Card number
+        <input name="number" inputmode="numeric" placeholder="16 digits" autocomplete="off" required th:attr="aria-invalid=${fieldErrors != null and fieldErrors.containsKey('number')}">
+        <span class="card-field-error" th:if="${fieldErrors != null and fieldErrors.containsKey('number')}" th:text="${fieldErrors.get('number')}"></span>
+    </label>
+    <label>Security code
+        <input name="code" type="password" inputmode="numeric" pattern="[0-9]{3}" maxlength="3" autocomplete="off" required th:attr="aria-invalid=${fieldErrors != null and fieldErrors.containsKey('code')}">
+        <span class="card-field-error" th:if="${fieldErrors != null and fieldErrors.containsKey('code')}" th:text="${fieldErrors.get('code')}"></span>
+    </label>
+    <label>Expiry date
+        <input name="expiry" type="month" required th:attr="aria-invalid=${fieldErrors != null and fieldErrors.containsKey('expiry')}">
+        <span class="card-field-error" th:if="${fieldErrors != null and fieldErrors.containsKey('expiry')}" th:text="${fieldErrors.get('expiry')}"></span>
+    </label>
+    <label>Telephone number
+        <input name="phone" type="tel" autocomplete="off" required th:attr="aria-invalid=${fieldErrors != null and fieldErrors.containsKey('phone')}">
+        <span class="card-field-error" th:if="${fieldErrors != null and fieldErrors.containsKey('phone')}" th:text="${fieldErrors.get('phone')}"></span>
+    </label>
+</fieldset>
 <button name="method" value="add">Save card</button></form></details></section>
 <section><h2>Payment history</h2><p th:if="${#lists.isEmpty(history)}">No payments yet.</p>
 <table th:unless="${#lists.isEmpty(history)}"><thead><tr><th>Booking</th><th>Date</th><th>JMD</th><th>Method</th><th>Status</th><th>Receipt</th></tr></thead>

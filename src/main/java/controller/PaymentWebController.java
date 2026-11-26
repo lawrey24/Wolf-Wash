@@ -98,10 +98,17 @@ public class PaymentWebController {
                 default -> throw new IllegalArgumentException("Invalid payment method.");
             }
             flash.addFlashAttribute("success", method.equals("add") ? "Card saved." : "Payment successful.");
+        } catch (SimulatedPaymentGateway.InvalidCardException e) {
+            flash.addFlashAttribute("cardErrors", e.fieldErrors());
+            flash.addFlashAttribute("cardErrorMethod", method);
+            flash.addFlashAttribute("cardErrorBookingId", bookingId);
+            return BACK + (method.equals("add") ? "#add-card" : "#new-card-" + bookingId);
         } catch (IllegalArgumentException e) {
             flash.addFlashAttribute("error", e.getMessage());
         } catch (SQLException e) {
-            flash.addFlashAttribute("error", "Unable to confirm the transaction. Check payment history before retrying.");
+            flash.addFlashAttribute("error", method.equals("add")
+                    ? "Unable to save the card. Please try again."
+                    : "Unable to confirm the transaction. Check payment history before retrying.");
         }
         return BACK;
     }

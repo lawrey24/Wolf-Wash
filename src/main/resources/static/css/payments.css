@@ -39,3 +39,7 @@
 .receipt-actions a {font-weight:600;text-underline-offset:3px}
 .payment-page :focus-visible,.receipt :focus-visible {outline:3px solid #217eab;outline-offset:2px}
 @media print {.receipt-actions {display:none}.receipt-page,.receipt {background:white;box-shadow:none;padding:0}.receipt {border:none}}
+
+.payment-page [role="alert"], .payment-page .card-field-error {color:#922d37;font-weight:600}
+.payment-page input[aria-invalid="true"] {border:2px solid #922d37}
+.payment-page .card-field-error {display:block;font-size:.9rem}
