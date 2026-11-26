@@ -83,6 +83,11 @@ public class Booking {
     public Time getEndTime() {
         return endTime;
     }
+    private String paymentStatus;
+    public String getPaymentStatus() { return paymentStatus; }
+
+    public void setPaymentStatus(String status) { paymentStatus = status; }
+
     @Override
 public String toString() {
     return "Student ID: " + studentId
@@ -91,6 +96,7 @@ public String toString() {
             + " | Dryer ID: " + dryerID
             + " | Date: " + slotDate
             + " | Start Time: " + startTime
-            + " | End Time: " + endTime;
+            + " | End Time: " + endTime
+            + (paymentStatus == null ? "" : " | Payment status: " + paymentStatus);
 }
 }

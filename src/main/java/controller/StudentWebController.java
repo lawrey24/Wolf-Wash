@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import service.AuthenticationService;
 import service.BookingService;
 import service.Cancelation;
+import service.PaymentService;
 
 import java.sql.Connection;
 import java.util.List;
@@ -99,7 +100,7 @@ public class StudentWebController {
             }
 
             model.addAttribute("studentName", "Student");
-            model.addAttribute("amountDue", "0.00");
+            model.addAttribute("amountDue", new PaymentService(studentId).amountDue());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -112,7 +113,7 @@ public class StudentWebController {
             model.addAttribute("activeBookings", 0);
             model.addAttribute("upcomingAppointment", "Unavailable");
             model.addAttribute("studentName", "Student");
-            model.addAttribute("amountDue", "0.00");
+            model.addAttribute("amountDue", "Unavailable");
         }
 
         return "student-dashboard";
@@ -166,6 +167,7 @@ public class StudentWebController {
 
         try {
             bookingService.createBooking(studentId, slotId);
+            new PaymentService(studentId).deliverNotifications();
 
             redirectAttributes.addFlashAttribute(
                     "success",
@@ -204,6 +206,7 @@ public class StudentWebController {
                 cancelationService.getStudentBookings(studentId);
 
         model.addAttribute("bookings", bookings);
+        model.addAttribute("formToken", PaymentWebController.formToken(session));
 
         return "my-bookings";
     }
@@ -211,6 +214,8 @@ public class StudentWebController {
     // CANCEL BOOKING
     @PostMapping("/student/cancel-booking")
     public String cancelBooking(
+            @RequestParam(defaultValue="") String settlement,
+            @RequestParam(defaultValue="") String formToken,
             @RequestParam int slotId,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
@@ -222,8 +227,12 @@ public class StudentWebController {
             return "redirect:/login";
         }
 
-        String result =
-                cancelationService.cancelBooking(studentId, slotId);
+        if (!PaymentWebController.validToken(session, formToken)) {
+            redirectAttributes.addFlashAttribute("bookingError", "Reload My Bookings and try again.");
+            return "redirect:/student/bookings";
+        }
+        String result = cancelationService.cancelBooking(studentId, slotId, settlement);
+        if (result.startsWith("Confirmation:")) new PaymentService(studentId).deliverNotifications();
 
         if (result.startsWith("Confirmation:")) {
             redirectAttributes.addFlashAttribute("success", result);

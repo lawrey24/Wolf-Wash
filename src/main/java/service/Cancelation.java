@@ -47,7 +47,7 @@ public class Cancelation {
         List<Booking> bookings = new ArrayList<>();
 
         String sql = """
-                SELECT t.slot_id,
+                SELECT b.payment_status, t.slot_id,
                        t.machine_id,
                        t.dryer_id,
                        t.slot_date,
@@ -69,7 +69,7 @@ public class Cancelation {
 
                 while (rs.next()) {
 
-                   bookings.add(new Booking(
+                   Booking booking = new Booking(
                       studentID,
                       rs.getInt("slot_id"),
                       rs.getInt("machine_id"),
@@ -78,7 +78,9 @@ public class Cancelation {
                       rs.getTime("start_time"),
                       rs.getTime("end_time")
                     
-                ));
+                );
+                    booking.setPaymentStatus(rs.getString("payment_status"));
+                    bookings.add(booking);
                 }
             }
 
@@ -137,12 +139,18 @@ public class Cancelation {
     // 4. Cancel an existing booking
     public String cancelBooking(String studentId, int slotId) {
 
+        return cancelBooking(studentId, slotId, "");
+    }
+
+    public String cancelBooking(String studentId, int slotId, String settlement) {
+        boolean credit = "CREDITED".equals(settlement);
+        boolean refund = "REFUND_PENDING".equals(settlement);
         String cancelBookingSql = """
                 UPDATE bookings
-                SET status = 'CANCELLED'
+                SET status = 'CANCELLED', payment_status = ?, refund_due = IF(? = 'REFUND_PENDING', NOW() + INTERVAL 3 DAY, NULL)
                 WHERE student_id = ?
                 AND slot_id = ?
-                AND status = 'ACTIVE'
+                AND status = 'ACTIVE' AND payment_status = ?
                 """;
 
         String releaseSlotSql = """
@@ -158,17 +166,45 @@ public class Cancelation {
 
             try {
 
+                int bookingId;
+                try (var lock=conn.prepareStatement("SELECT booking_id FROM bookings WHERE student_id=? AND slot_id=? AND status='ACTIVE' FOR UPDATE")) {
+                    lock.setString(1,studentId);
+                    lock.setInt(2,slotId);
+                    try(var row=lock.executeQuery()) {
+                        if(!row.next()) { conn.rollback(); return "No active booking for that slot."; }
+                        bookingId=row.getInt(1);
+                    }
+                }
                 // Cancel the student's active booking
                 try (PreparedStatement cancelStmt =
                              conn.prepareStatement(cancelBookingSql)) {
 
-                    cancelStmt.setString(1, studentId);
-                    cancelStmt.setInt(2, slotId);
+                    String status = credit || refund ? settlement : "UNPAID";
+                    cancelStmt.setString(1, status);
+                    cancelStmt.setString(2, status);
+                    cancelStmt.setString(3, studentId);
+                    cancelStmt.setInt(4, slotId);
+                    cancelStmt.setString(5, credit || refund ? "PAID" : "UNPAID");
 
                     if (cancelStmt.executeUpdate() != 1) {
                         conn.rollback();
 
                         return "Cancellation failed: Booking not found or already cancelled.";
+                    }
+                }
+
+                if (credit) {
+                    String sql = """
+                        UPDATE students s JOIN bookings b ON b.student_id=s.student_id
+                        JOIN payments p ON p.booking_id=b.booking_id
+                        SET s.balance=s.balance+p.amount
+                        WHERE s.student_id=? AND b.slot_id=? AND b.booking_id=?
+                        """;
+                    try (var stmt=conn.prepareStatement(sql)) {
+                        stmt.setString(1,studentId);
+                        stmt.setInt(2,slotId);
+                        stmt.setInt(3,bookingId);
+                        if(stmt.executeUpdate()!=1) throw new SQLException("Credit could not be applied.");
                     }
                 }
 
@@ -185,11 +221,17 @@ public class Cancelation {
                     }
                 }
 
+                String type = credit ? "CREDIT_ADDED" : refund ? "REFUND_REQUESTED" : "AMOUNT_DUE_CLEARED";
+                String message = credit ? "Booking cancelled. The payment amount was added to your available credit."
+                        : refund ? "Booking cancelled. Refund requested. Allow up to three days."
+                        : "Booking cancelled. This reservation has no remaining amount due.";
+                dao.PaymentNotifications.queue(conn, studentId, bookingId, type, message);
                 conn.commit();
 
                 return "Confirmation: Your booking for Slot #"
                         + slotId
-                        + " has been cancelled and the slot is now available.";
+                        + " has been cancelled and the slot is now available."
+                        + (credit ? " Credit applied." : refund ? " Refund requested. Allow up to 3 days for processing." : "");
 
             } catch (SQLException e) {
 
