@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Feedback &amp; Suggestions | Wolf Wash</title>
+
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" th:href="@{/css/issues.css}">
+</head>
+
+<body>
+
+<div class="admin-dashboard">
+
+    <!-- HEADER -->
+    <header class="admin-header">
+
+        <h1>WOLF <span>WASH</span></h1>
+
+        <a href="/admin/logout">Logout</a>
+
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="admin-main">
+
+        <section class="admin-welcome">
+
+            <h2>Student Feedback &amp; Suggestions</h2>
+
+            <p>
+                Welcome, Administrator.
+                Logged in as:
+                <strong th:text="${adminId}"></strong>
+            </p>
+
+            <a class="admin-action admin-action-secondary" th:href="@{/admin/dashboard}">Back to Admin Dashboard</a>
+
+        </section>
+
+        <!-- NOTIFICATIONS -->
+        <p th:if="${success}"
+           class="admin-success"
+           th:text="${success}">
+        </p>
+
+        <p th:if="${error}"
+           class="admin-alert"
+           th:text="${error}">
+        </p>
+
+        <!-- FEEDBACK SECTION -->
+        <section>
+
+            <p style="color: #6b7280; margin-top: 8px;">
+                Review student submissions and manage their status.
+            </p>
+
+            <div th:if="${feedback != null}">
+
+                <article class="feedback-card"
+                         th:object="${feedback}">
+
+                    <h3 th:text="${feedback.heading}"></h3>
+
+                    <p>
+                        <strong>Student:</strong>
+                        <span th:text="${feedback.userName}"></span>
+                    </p>
+
+                    <p>
+                        <strong>Student ID:</strong>
+                        <span th:text="${feedback.userId}"></span>
+                    </p>
+
+                    <p>
+                        <strong>Submitted:</strong>
+                        <span th:text="${feedback.createdAt == null ? 'Unavailable' : #temporals.format(feedback.createdAt, 'MMM d, yyyy · h:mm a')}"></span>
+                    </p>
+
+                    <div class="feedback-message">
+
+                        <strong>Message</strong>
+
+                        <p th:text="${feedback.message}"></p>
+
+                    </div>
+
+                    <p>
+                        <strong>Current status:</strong>
+
+                        <span class="status-label"
+                              th:classappend="${feedback.status == 'NEW' ? ' status-new' :
+                                               feedback.status == 'IN_REVIEW' ? ' status-in-review' :
+                                               feedback.status == 'RESOLVED' ? ' status-resolved' :
+                                               ' status-closed'}"
+                              th:text="${feedback.status == 'NEW' ? 'New' : #strings.replace(feedback.status, '_', ' ')}">
+                        </span>
+                    </p>
+
+                    <p>
+                        <strong>Previous admin note:</strong>
+
+                        <span th:text="${feedback.adminNote != null ? feedback.adminNote : 'None'}"></span>
+                    </p>
+
+                    <!-- UPDATE FORM -->
+                    <form action="/admin/feedback/update" method="post">
+
+                        <input type="hidden"
+                               name="feedbackId"
+                               th:value="${feedback.id}">
+
+                        <label>Status</label>
+
+                        <select name="status" required>
+
+                            <option value="IN_REVIEW" th:selected="${feedback.status == 'IN_REVIEW'}">In Review</option>
+
+                            <option value="RESOLVED" th:selected="${feedback.status == 'RESOLVED'}">Resolved</option>
+
+                            <option value="CLOSED" th:selected="${feedback.status == 'CLOSED'}">Closed</option>
+
+                        </select>
+
+                        <label>Admin Note</label>
+
+                        <textarea name="note"
+                                  placeholder="Enter an administrative note..."></textarea>
+
+                        <button type="submit">
+                            Update Feedback
+                        </button>
+
+                    </form>
+
+                </article>
+
+            </div>
+
+            <section class="issue-list" th:if="${feedbackList != null and !#lists.isEmpty(feedbackList)}">
+                <h3>All submissions</h3>
+                <article class="issue-list-item" th:each="item : ${feedbackList}">
+                    <h3>
+                        <a th:href="@{/admin/feedback(id=${item.id})}"
+                           th:attr="aria-current=${feedback != null and feedback.id == item.id ? 'page' : null}"
+                           th:text="${item.heading}"></a>
+                    </h3>
+                </article>
+            </section>
+
+            <!-- EMPTY STATE -->
+            <div class="admin-empty"
+                 th:if="${feedbackList != null and feedbackList.isEmpty()}">
+
+                <h3>No Feedback Yet</h3>
+
+                <p>Student submissions will appear here.</p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

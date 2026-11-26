@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feedback & Suggestions | Wolf Wash</title>
     <link rel="stylesheet" href="/css/student-dashboard.css">
+    <link rel="stylesheet" th:href="@{/css/issues.css}">
 </head>
 
 <body>
@@ -14,37 +15,16 @@
 <div class="dashboard-container">
 
     <!-- SIDEBAR -->
-    <aside class="sidebar">
-
-        <h2>WOLF <span>WASH</span></h2>
-        <p class="tagline">CLEAN • FRESH • ON TIME</p>
-
-        <nav>
-            <a href="/student/dashboard">Dashboard</a>
-            <a href="/student/book">Book a Time Slot</a>
-            <a th:href="@{/student/bookings}">My Bookings</a>
-            <a href="/student/payments">Payments</a>
-            <a href="/student/support">Help & Support</a>
-            <a href="/student/feedback" class="active">
-                Feedback & Suggestions
-            </a>
-            <a href="/logout">Logout</a>
-        </nav>
-
-    </aside>
+    <div th:replace="~{fragments/student-portal :: sidebar('feedback')}"></div>
 
     <!-- MAIN CONTENT -->
     <main class="main-content">
 
-        <!-- TOP BAR -->
-        <header class="top-bar">
-            <span>Student Portal</span>
-            <span class="student-profile">Student Account</span>
-        </header>
+        <div th:replace="~{fragments/student-portal :: topBar}"></div>
 
         <!-- PAGE HEADING -->
         <section class="welcome">
-            <h1>Feedback <span>& Suggestions</span></h1>
+            <h1>Feedback &amp; Suggestions</h1>
             <p>Share your thoughts and help us improve Wolf Wash.</p>
         </section>
 
@@ -64,76 +44,26 @@
 
             <h2>Submit Feedback</h2>
 
-            <form action="/student/feedback" method="post">
-
-                <label for="category">Submission Type</label>
-
-                <select id="category" name="category" required>
-                    <option value="">Select a type</option>
-                    <option value="FEEDBACK">Feedback</option>
-                    <option value="SUGGESTION">Suggestion</option>
-                </select>
-
-                <label for="message">Your Message</label>
-
-                <textarea
-                    id="message"
-                    name="message"
-                    minlength="10"
-                    maxlength="1000"
-                    placeholder="Tell us what you think..."
-                    required></textarea>
-
-                <button type="submit" class="feedback-button">
-                    Submit
-                </button>
-
-            </form>
-
-        </section>
-
-        <!-- PREVIOUS SUBMISSIONS -->
-        <section class="dashboard-section">
-
-            <h2>My Previous Submissions</h2>
-
-            <div th:if="${#lists.isEmpty(feedbackList)}">
-                <p>You haven't submitted any feedback yet.</p>
-            </div>
-
-            <div th:each="item : ${feedbackList}"
-                 class="feedback-item">
-
-                <div class="section-heading">
-                    <h3 th:text="${item.category}"></h3>
-                    <span class="feedback-status"
-                          th:text="${item.status}"></span>
+            <form class="support-form" th:action="@{/student/feedback}" method="post">
+                <div>
+                    <label for="category">Submission Type</label>
+                    <select id="category" name="category" required>
+                        <option value="">Select a type</option>
+                        <option value="FEEDBACK" th:selected="${submittedCategory == 'FEEDBACK'}">Feedback</option>
+                        <option value="SUGGESTION" th:selected="${submittedCategory == 'SUGGESTION'}">Suggestion</option>
+                    </select>
                 </div>
-
-                <p th:text="${item.message}"></p>
-
-                <p th:if="${item.adminNote != null
-                           and !item.adminNote.isEmpty()}">
-                    <strong>Administrator Response:</strong>
-                    <span th:text="${item.adminNote}"></span>
-                </p>
-
-                <form action="/student/feedback/delete"
-                      method="post"
-                      th:if="${item.status == 'NEW'}">
-
-                    <input type="hidden"
-                           name="feedbackId"
-                           th:value="${item.id}">
-
-                    <button type="submit"
-                            class="delete-button">
-                        Delete Submission
-                    </button>
-
-                </form>
-
-            </div>
+                <div>
+                    <label for="feedback-title">Title</label>
+                    <input id="feedback-title" name="title" maxlength="150" required th:value="${submittedTitle}">
+                </div>
+                <div>
+                    <label for="message">Your Message</label>
+                    <textarea id="message" name="message" rows="5" minlength="10" maxlength="1000"
+                              placeholder="Tell us what you think..." th:text="${submittedMessage}" required></textarea>
+                </div>
+                <button type="submit" class="feedback-button">Submit</button>
+            </form>
 
         </section>
 

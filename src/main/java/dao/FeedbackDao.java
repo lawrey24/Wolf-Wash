@@ -10,17 +10,18 @@ import java.util.List;
 public class FeedbackDao {
 
     // Save a student's feedback or suggestion.
-    public void save(User user, String category, String message)
+    public void save(User user, String category, String title, String message)
             throws SQLException {
 
-        String sql = "INSERT INTO feedback (student_id, type, message) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO feedback (student_id, type, title, message) VALUES (?, ?, ?, ?)";
 
         try (Connection c = DatabaseConnection.getConnection();
              PreparedStatement p = c.prepareStatement(sql)) {
 
             p.setString(1, user.getId());
             p.setString(2, category);
-            p.setString(3, message);
+            p.setString(3, title);
+            p.setString(4, message);
 
             p.executeUpdate();
         }
@@ -112,6 +113,7 @@ public class FeedbackDao {
                     r.getString("student_id"),
                     r.getString("full_name"),
                     r.getString("type"),
+                    r.getString("title"),
                     r.getString("message"),
                     r.getString("status"),
                     r.getString("admin_note"),

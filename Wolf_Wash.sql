@@ -29,6 +29,8 @@ CREATE TABLE IF NOT EXISTS feedback (
 
     type ENUM('FEEDBACK', 'SUGGESTION') NOT NULL,
 
+    title VARCHAR(150) NULL,
+
     message VARCHAR(1000) NOT NULL,
 
     status ENUM('NEW', 'IN_REVIEW', 'RESOLVED', 'CLOSED')

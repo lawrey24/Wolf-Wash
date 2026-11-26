@@ -38,127 +38,48 @@
 
         </section>
 
-        <!-- NOTIFICATIONS -->
-        <p th:if="${success}"
-           class="admin-success"
-           th:text="${success}">
-        </p>
-
-        <p th:if="${error}"
-           class="admin-alert"
-           th:text="${error}">
-        </p>
-
-        <!-- FEEDBACK SECTION -->
-        <section>
-
-            <h2>Student Feedback & Suggestions</h2>
-
-            <p style="color: #6b7280; margin-top: 8px;">
-                Review student submissions and manage their status.
-            </p>
-
-            <div th:if="${feedbackList != null and !feedbackList.isEmpty()}">
-
-                <article class="feedback-card"
-                         th:each="feedback : ${feedbackList}">
-
-                    <h3>
-                        <span th:text="${feedback.category}"></span>
-                        <span>#</span>
-                        <span th:text="${feedback.id}"></span>
-                    </h3>
-
-                    <p>
-                        <strong>Student:</strong>
-                        <span th:text="${feedback.userName}"></span>
-                    </p>
-
-                    <p>
-                        <strong>Student ID:</strong>
-                        <span th:text="${feedback.userId}"></span>
-                    </p>
-
-                    <p>
-                        <strong>Submitted:</strong>
-                        <span th:text="${feedback.createdAt}"></span>
-                    </p>
-
-                    <div class="feedback-message">
-
-                        <strong>Message</strong>
-
-                        <p th:text="${feedback.message}"></p>
-
+        <div class="admin-overview">
+            <section class="overview-card">
+                <h2>Washers and Dryers</h2>
+                <p th:if="${equipmentUnavailable}">Equipment totals are unavailable.</p>
+                <p th:if="${equipmentTotal == 0}">No equipment registered.</p>
+                <div class="equipment-summary" th:if="${equipmentTotal != null and equipmentTotal > 0}">
+                    <div class="overview-ring" th:classappend="${equipmentTone}"
+                         th:style="|--progress: ${equipmentPercent}%|">
+                        <strong th:text="|${equipmentPercent}%|"></strong>
                     </div>
-
-                    <p>
-                        <strong>Current status:</strong>
-
-                        <span class="status-label"
-                              th:classappend="${feedback.status == 'NEW' ? ' status-new' :
-                                               feedback.status == 'IN_REVIEW' ? ' status-in-review' :
-                                               feedback.status == 'RESOLVED' ? ' status-resolved' :
-                                               ' status-closed'}"
-                              th:text="${feedback.status}">
-                        </span>
-                    </p>
-
-                    <p>
-                        <strong>Previous admin note:</strong>
-
-                        <span th:text="${feedback.adminNote != null ? feedback.adminNote : 'None'}"></span>
-                    </p>
-
-                    <!-- UPDATE FORM -->
-                    <form action="/admin/feedback/update" method="post">
-
-                        <input type="hidden"
-                               name="feedbackId"
-                               th:value="${feedback.id}">
-
-                        <label>Status</label>
-
-                        <select name="status" required>
-
-                            <option value="IN_REVIEW">In Review</option>
-
-                            <option value="RESOLVED">Resolved</option>
-
-                            <option value="CLOSED">Closed</option>
-
-                        </select>
-
-                        <label>Admin Note</label>
-
-                        <textarea name="note"
-                                  placeholder="Enter an administrative note..."></textarea>
-
-                        <button type="submit">
-                            Update Feedback
-                        </button>
-
-                    </form>
-
-                </article>
-
-            </div>
-
-            <!-- EMPTY STATE -->
-            <div class="admin-empty"
-                 th:if="${feedbackList == null or feedbackList.isEmpty()}">
-
-                <h3>No Feedback Yet</h3>
-
-                <p>Student submissions will appear here.</p>
-
-            </div>
-
-        </section>
+                    <div>
+                        <p th:text="|${operational} of ${equipmentTotal} operational|"></p>
+                        <p th:text="|${equipmentTotal - operational} out of service|"></p>
+                    </div>
+                </div>
+                <a class="admin-action" th:href="@{/admin/machines}">Monitor Washers and Dryers</a>
+            </section>
+            <section class="overview-card">
+                <h2>Student Feedback &amp; Suggestions</h2>
+                <p th:if="${feedbackUnavailable}">Feedback totals are unavailable.</p>
+                <dl class="feedback-totals" th:unless="${feedbackUnavailable}">
+                    <div><dt>Total</dt><dd th:text="${feedbackTotal}"></dd></div>
+                    <div><dt>New</dt><dd th:text="${feedbackNew}"></dd></div>
+                    <div><dt>In review</dt><dd th:text="${feedbackInReview}"></dd></div>
+                    <div><dt>Resolved</dt><dd th:text="${feedbackResolved}"></dd></div>
+                </dl>
+                <a class="admin-action" th:href="@{/admin/feedback}">View Student Feedback &amp; Suggestions</a>
+            </section>
+            <section class="overview-card">
+                <h2>Reported Issues</h2>
+                <p th:if="${issuesUnavailable}">Ticket totals are unavailable.</p>
+                <dl class="feedback-totals" th:unless="${issuesUnavailable}">
+                    <div><dt>Total</dt><dd th:text="${issueTotal}"></dd></div>
+                    <div><dt>New</dt><dd th:text="${issuePending}"></dd></div>
+                    <div><dt>In progress</dt><dd th:text="${issueInProgress}"></dd></div>
+                    <div><dt>Resolved</dt><dd th:text="${issueResolved}"></dd></div>
+                </dl>
+                <a class="admin-action" th:href="@{/admin/issues}">Manage Reported Issues</a>
+            </section>
+        </div>
 
     </main>
-
 </div>
-
 </body>
 </html>

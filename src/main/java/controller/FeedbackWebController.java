@@ -7,7 +7,6 @@ import service.FeedbackService;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,37 +20,17 @@ public class FeedbackWebController {
     private final FeedbackService feedbackService =
             new FeedbackService(new FeedbackDao());
 
-    // Display the feedback page.
     @GetMapping("/student/feedback")
-    public String feedbackPage(HttpSession session, Model model) {
-
-        String studentId =
-                (String) session.getAttribute("studentId");
-
-        if (studentId == null) {
-            return "redirect:/login";
-        }
-
-        User user = new User(studentId, "Student", false);
-
-        try {
-            model.addAttribute(
-                    "feedbackList",
-                    feedbackService.myFeedback(user));
-        } catch (SQLException e) {
-            model.addAttribute(
-                    "errorMessage",
-                    "Unable to load your feedback.");
-        }
-
-        return "feedback";
+    public String feedbackPage(HttpSession session) {
+        return session.getAttribute("studentId") == null ? "redirect:/login" : "feedback";
     }
 
     // Submit feedback or a suggestion.
     @PostMapping("/student/feedback")
     public String submitFeedback(
-            @RequestParam String category,
-            @RequestParam String message,
+            @RequestParam("category") String category,
+            @RequestParam(name = "title", defaultValue = "") String title,
+            @RequestParam("message") String message,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
@@ -65,7 +44,7 @@ public class FeedbackWebController {
         User user = new User(studentId, "Student", false);
 
         try {
-            feedbackService.submit(user, category, message);
+            feedbackService.submit(user, category, title, message);
 
             redirectAttributes.addFlashAttribute(
                     "successMessage",
@@ -83,45 +62,11 @@ public class FeedbackWebController {
                     "Unable to submit your feedback. Please try again.");
         }
 
-        return "redirect:/student/feedback";
-    }
-
-    // Delete an eligible submission.
-    @PostMapping("/student/feedback/delete")
-    public String deleteFeedback(
-            @RequestParam int feedbackId,
-            HttpSession session,
-            RedirectAttributes redirectAttributes) {
-
-        String studentId =
-                (String) session.getAttribute("studentId");
-
-        if (studentId == null) {
-            return "redirect:/login";
+        if (redirectAttributes.getFlashAttributes().containsKey("errorMessage")) {
+            redirectAttributes.addFlashAttribute("submittedCategory", category);
+            redirectAttributes.addFlashAttribute("submittedTitle", title.substring(0, Math.min(title.length(), 150)));
+            redirectAttributes.addFlashAttribute("submittedMessage", message.substring(0, Math.min(message.length(), 1000)));
         }
-
-        User user = new User(studentId, "Student", false);
-
-        try {
-            boolean deleted =
-                    feedbackService.delete(user, feedbackId);
-
-            if (deleted) {
-                redirectAttributes.addFlashAttribute(
-                        "successMessage",
-                        "Feedback deleted successfully.");
-            } else {
-                redirectAttributes.addFlashAttribute(
-                        "errorMessage",
-                        "This submission cannot be deleted.");
-            }
-
-        } catch (SQLException e) {
-            redirectAttributes.addFlashAttribute(
-                    "errorMessage",
-                    "Unable to delete this submission.");
-        }
-
         return "redirect:/student/feedback";
     }
 }

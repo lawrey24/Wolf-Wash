@@ -19,7 +19,7 @@ public class FeedbackService {
     }
 
     // Submit feedback or a suggestion.
-    public void submit(User user, String category, String message)
+    public void submit(User user, String category, String title, String message)
             throws SQLException {
 
         if (user == null || user.isAdmin()) {
@@ -31,6 +31,11 @@ public class FeedbackService {
                 && !"SUGGESTION".equals(category)) {
             throw new IllegalArgumentException(
                     "Choose a valid category.");
+        }
+
+        String cleanedTitle = title == null ? "" : title.strip();
+        if (cleanedTitle.isEmpty() || cleanedTitle.length() > 150) {
+            throw new IllegalArgumentException("Enter a title of 1 to 150 characters.");
         }
 
         String cleaned = message == null ? "" : message.trim();
@@ -45,7 +50,7 @@ public class FeedbackService {
                     "Please keep the message under 1000 characters.");
         }
 
-        dao.save(user, category, cleaned);
+        dao.save(user, category, cleanedTitle, cleaned);
     }
 
     // Retrieve feedback belonging to a student.
