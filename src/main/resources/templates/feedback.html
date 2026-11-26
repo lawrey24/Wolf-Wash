@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback & Suggestions | Wolf Wash</title>
+    <link rel="stylesheet" href="/css/student-dashboard.css">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <h2>WOLF <span>WASH</span></h2>
+        <p class="tagline">CLEAN • FRESH • ON TIME</p>
+
+        <nav>
+            <a href="/student/dashboard">Dashboard</a>
+            <a href="/student/book">Book a Time Slot</a>
+            <a th:href="@{/student/bookings}">My Bookings</a>
+            <a href="/student/payments">Payments</a>
+            <a href="/student/support">Help & Support</a>
+            <a href="/student/feedback" class="active">
+                Feedback & Suggestions
+            </a>
+            <a href="/logout">Logout</a>
+        </nav>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+        <header class="top-bar">
+            <span>Student Portal</span>
+            <span class="student-profile">Student Account</span>
+        </header>
+
+        <!-- PAGE HEADING -->
+        <section class="welcome">
+            <h1>Feedback <span>& Suggestions</span></h1>
+            <p>Share your thoughts and help us improve Wolf Wash.</p>
+        </section>
+
+        <!-- MESSAGES -->
+        <section th:if="${successMessage}" class="dashboard-section">
+            <p style="color: #0d9588;"
+               th:text="${successMessage}"></p>
+        </section>
+
+        <section th:if="${errorMessage}" class="dashboard-section">
+            <p style="color: #b42318;"
+               th:text="${errorMessage}"></p>
+        </section>
+
+        <!-- SUBMISSION FORM -->
+        <section class="dashboard-section">
+
+            <h2>Submit Feedback</h2>
+
+            <form action="/student/feedback" method="post">
+
+                <label for="category">Submission Type</label>
+
+                <select id="category" name="category" required>
+                    <option value="">Select a type</option>
+                    <option value="FEEDBACK">Feedback</option>
+                    <option value="SUGGESTION">Suggestion</option>
+                </select>
+
+                <label for="message">Your Message</label>
+
+                <textarea
+                    id="message"
+                    name="message"
+                    minlength="10"
+                    maxlength="1000"
+                    placeholder="Tell us what you think..."
+                    required></textarea>
+
+                <button type="submit" class="feedback-button">
+                    Submit
+                </button>
+
+            </form>
+
+        </section>
+
+        <!-- PREVIOUS SUBMISSIONS -->
+        <section class="dashboard-section">
+
+            <h2>My Previous Submissions</h2>
+
+            <div th:if="${#lists.isEmpty(feedbackList)}">
+                <p>You haven't submitted any feedback yet.</p>
+            </div>
+
+            <div th:each="item : ${feedbackList}"
+                 class="feedback-item">
+
+                <div class="section-heading">
+                    <h3 th:text="${item.category}"></h3>
+                    <span class="feedback-status"
+                          th:text="${item.status}"></span>
+                </div>
+
+                <p th:text="${item.message}"></p>
+
+                <p th:if="${item.adminNote != null
+                           and !item.adminNote.isEmpty()}">
+                    <strong>Administrator Response:</strong>
+                    <span th:text="${item.adminNote}"></span>
+                </p>
+
+                <form action="/student/feedback/delete"
+                      method="post"
+                      th:if="${item.status == 'NEW'}">
+
+                    <input type="hidden"
+                           name="feedbackId"
+                           th:value="${item.id}">
+
+                    <button type="submit"
+                            class="delete-button">
+                        Delete Submission
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

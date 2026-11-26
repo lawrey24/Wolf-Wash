@@ -376,3 +376,104 @@ tbody tr:last-child td {
 }
 
 
+/* =====================================
+   FEEDBACK & SUGGESTIONS
+===================================== */
+
+.feedback-form label {
+    display: block;
+    color: var(--navy);
+    font-size: 14px;
+    font-weight: 600;
+    margin: 20px 0 8px;
+}
+
+.dashboard-section select,
+.dashboard-section textarea {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: #fff;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.dashboard-section select:focus,
+.dashboard-section textarea:focus {
+    border-color: var(--teal);
+}
+
+.dashboard-section textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+.feedback-button {
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 13px 25px;
+    margin-top: 18px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.feedback-button:hover {
+    background: var(--teal-dark);
+    transform: translateY(-2px);
+}
+
+.feedback-item {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.feedback-item:last-child {
+    border-bottom: none;
+}
+
+.feedback-item h3 {
+    color: var(--navy);
+    font-size: 15px;
+}
+
+.feedback-item p {
+    color: #526174;
+    font-size: 14px;
+    margin: 12px 0;
+    overflow-wrap: anywhere;
+}
+
+.feedback-status {
+    background: #e8f7f5;
+    color: var(--teal-dark);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.delete-button {
+    background: #fff;
+    color: #c0392b;
+    border: 1px solid #e5b7b3;
+    padding: 9px 15px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background: #fff1f0;
+}
+
+
+
