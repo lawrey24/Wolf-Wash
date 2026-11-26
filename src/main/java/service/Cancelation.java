@@ -3,6 +3,7 @@
 package service;
 
 import dao.DatabaseConnection;
+import dao.TimeSlotDAO;
 import model.Booking;
 import model.TimeSlot;
 
@@ -94,46 +95,12 @@ public class Cancelation {
     // 3. Retrieve all available future time slots
     public List<TimeSlot> getAvailableSlots() {
 
-        List<TimeSlot> slots = new ArrayList<>();
-
-        String sql = """
-                SELECT slot_id,
-                       machine_id,
-                       dryer_id,
-                       slot_date,
-                       start_time,
-                       end_time,
-                       status
-                FROM time_slots
-                WHERE status = 'AVAILABLE'
-                AND TIMESTAMP(slot_date, start_time) > NOW()
-                ORDER BY slot_date, start_time
-                """;
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-
-                TimeSlot slot = new TimeSlot(
-                        rs.getInt("slot_id"),
-                        rs.getInt("machine_id"),
-                        rs.getInt("dryer_id"),
-                        rs.getDate("slot_date").toLocalDate(),
-                        rs.getTime("start_time").toLocalTime(),
-                        rs.getTime("end_time").toLocalTime(),
-                        rs.getString("status")
-                );
-
-                slots.add(slot);
-            }
-
+        try {
+            return new TimeSlotDAO().getAvailableSlots();
         } catch (SQLException e) {
             System.err.println("Error retrieving available slots: " + e.getMessage());
+            return List.of();
         }
-
-        return slots;
     }
 
     // 4. Cancel an existing booking
@@ -255,14 +222,6 @@ public class Cancelation {
             return "Rescheduling failed: You selected your existing time slot.";
         }
 
-        String bookNewSlotSql = """
-                UPDATE time_slots
-                SET status = 'BOOKED'
-                WHERE slot_id = ?
-                AND status = 'AVAILABLE'
-                AND TIMESTAMP(slot_date, start_time) > NOW()
-                """;
-
         String updateBookingSql = """
                 UPDATE bookings
                 SET slot_id = ?
@@ -285,16 +244,9 @@ public class Cancelation {
             try {
 
                 // 1. Reserve the new slot if it is available
-                try (PreparedStatement bookNewStmt =
-                             conn.prepareStatement(bookNewSlotSql)) {
-
-                    bookNewStmt.setInt(1, newSlotId);
-
-                    if (bookNewStmt.executeUpdate() != 1) {
-                        conn.rollback();
-
-                        return "Rescheduling failed: The selected time slot is no longer available.";
-                    }
+                if (!new TimeSlotDAO().markSlotAsBooked(conn, newSlotId)) {
+                    conn.rollback();
+                    return "Rescheduling failed: The selected time slot is no longer available.";
                 }
 
                 // 2. Update the student's active booking

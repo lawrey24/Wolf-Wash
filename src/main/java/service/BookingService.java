@@ -10,6 +10,7 @@ import model.TimeSlot;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 public class BookingService {
@@ -101,7 +102,7 @@ public class BookingService {
                                 slot.getStartTime());
 
                 if (!slotStart.isAfter(
-                        LocalDateTime.now())) {
+                        LocalDateTime.now(ZoneId.of("America/Jamaica")))) {
 
                     throw new IllegalArgumentException(
                             "Cannot book a slot that has already started.");

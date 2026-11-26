@@ -8,6 +8,17 @@ import java.util.List;
 
 public class TimeSlotDAO {
 
+    // Slots are entered in Jamaica local time (UTC-05:00 year-round).
+    private static final String FUTURE_SLOT =
+            " AND TIMESTAMP(slot_date, start_time) > (UTC_TIMESTAMP() - INTERVAL 5 HOUR) ";
+
+    private static final String SERVICEABLE_EQUIPMENT = """
+            AND NOT EXISTS (SELECT 1 FROM machines m
+                            WHERE m.machine_id = time_slots.machine_id AND m.status = 'OUT_OF_SERVICE')
+            AND NOT EXISTS (SELECT 1 FROM dryers d
+                            WHERE d.dryer_id = time_slots.dryer_id AND d.status = 'OUT_OF_SERVICE')
+            """;
+
     // 1. Retrieve all available future time slots
     public List<TimeSlot> getAvailableSlots()
             throws SQLException {
@@ -19,9 +30,7 @@ public class TimeSlotDAO {
                        slot_date, start_time, end_time, status
                 FROM time_slots
                 WHERE status = 'AVAILABLE'
-                AND TIMESTAMP(slot_date, start_time) > NOW()
-                ORDER BY slot_date, start_time
-                """;
+                """ + FUTURE_SLOT + SERVICEABLE_EQUIPMENT + " ORDER BY slot_date, start_time";
 
         try (Connection conn =
                      DatabaseConnection.getConnection();
@@ -98,7 +107,7 @@ public class TimeSlotDAO {
                 SET status = 'BOOKED'
                 WHERE slot_id = ?
                 AND status = 'AVAILABLE'
-                """;
+                """ + FUTURE_SLOT + SERVICEABLE_EQUIPMENT;
 
         try (PreparedStatement stmt =
                      conn.prepareStatement(sql)) {
