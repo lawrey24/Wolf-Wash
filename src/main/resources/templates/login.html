@@ -15,18 +15,7 @@
 <body>
 
     <!-- Navigation Bar -->
-    <header class="navbar">
-        <div class="logo">WOLF WASH</div>
-
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/#services">Services</a></li>
-                <li><a href="/#about">About Us</a></li>
-                <li><a href="/login" class="active">Student Login</a></li>
-            </ul>
-        </nav>
-    </header>
+    <header th:replace="~{fragments/public-header :: navigation}"></header>
 
     <!-- Login Section -->
     <section class="login-section">
