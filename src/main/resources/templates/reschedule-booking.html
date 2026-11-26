@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reschedule Booking | Wolf Wash</title>
 
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/student-dashboard.css}">
     <link rel="stylesheet" th:href="@{/css/booking.css}">
 </head>
 
@@ -14,20 +14,11 @@
 
 <div class="dashboard-container">
 
-    <aside class="sidebar">
-        <h2>WOLF WASH</h2>
-
-        <nav>
-            <a th:href="@{/student/dashboard}">Dashboard</a>
-            <a th:href="@{/student/book}">Book a Time Slot</a>
-            <a th:href="@{/student/bookings}" class="active">My Bookings</a>
-            <a th:href="@{/student/payments}">Payments</a>
-            <a th:href="@{/student/support}">Help & Support</a>
-            <a th:href="@{/logout}">Logout</a>
-        </nav>
-    </aside>
+    <div th:replace="~{fragments/student-portal :: sidebar('bookings')}"></div>
 
     <main class="main-content">
+        <div th:replace="~{fragments/student-portal :: topBar}"></div>
+
 
         <section class="booking-heading">
             <h1>Reschedule Booking</h1>
@@ -54,29 +45,7 @@
 
                 <div class="slot-card" th:each="slot : ${availableSlots}">
 
-                    <div class="slot-card-header">
-                        <h3 th:text="${slot.slotDate}">Date</h3>
-                        <span class="available-label">Available</span>
-                    </div>
-
-                    <div class="slot-details">
-                        <p>
-                            <strong>Time:</strong>
-                            <span th:text="${slot.startTime}"></span>
-                            -
-                            <span th:text="${slot.endTime}"></span>
-                        </p>
-
-                        <p>
-                            <strong>Machine:</strong>
-                            <span th:text="${slot.machineId}"></span>
-                        </p>
-
-                        <p>
-                            <strong>Dryer:</strong>
-                            <span th:text="${slot.dryerId}"></span>
-                        </p>
-                    </div>
+                    <th:block th:replace="~{fragments/booking-slot :: slotDetails(${slot})}"></th:block>
 
                     <form th:action="@{/student/reschedule}" method="post">
 

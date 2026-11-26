@@ -16,58 +16,13 @@
 <div class="dashboard-container">
 
     <!-- SIDEBAR -->
-    <aside class="sidebar">
-
-        <h2>WOLF <span>WASH</span></h2>
-
-        <p class="tagline">CLEAN • FRESH • ON TIME</p>
-
-        <nav>
-            <a href="/student/dashboard" class="active">
-                Dashboard
-            </a>
-
-            <a href="/student/book">
-                Book a Time Slot
-            </a>
-
-            <a th:href="@{/student/bookings}">
-              My Bookings
-             </a>
-
-            <a href="/student/payments">
-                Payments
-            </a>
-
-            <a href="/student/support">
-                Help & Support
-            </a>
-			
-			<a href="/student/feedback">
-				Feedback & Suggestions
-			</a>
-
-            <a href="/logout">
-                Logout
-            </a>
-        </nav>
-
-    </aside>
+    <div th:replace="~{fragments/student-portal :: sidebar('dashboard')}"></div>
 
 
     <!-- MAIN CONTENT -->
     <main class="main-content">
 
-        <!-- TOP BAR -->
-        <header class="top-bar">
-
-            <span>Student Portal</span>
-
-            <span class="student-profile">
-                Student Account
-            </span>
-
-        </header>
+        <div th:replace="~{fragments/student-portal :: topBar}"></div>
 
 
         <!-- WELCOME SECTION -->

@@ -1,0 +1,18 @@
+<aside class="sidebar" th:fragment="sidebar(activePage)">
+    <h2>WOLF <span>WASH</span></h2>
+    <p class="tagline">CLEAN • FRESH • ON TIME</p>
+    <nav aria-label="Student navigation">
+        <a th:href="@{/student/dashboard}" th:classappend="${activePage == 'dashboard' ? 'active' : null}" th:attr="aria-current=${activePage == 'dashboard' ? 'page' : null}">Dashboard</a>
+        <a th:href="@{/student/book}" th:classappend="${activePage == 'book' ? 'active' : null}" th:attr="aria-current=${activePage == 'book' ? 'page' : null}">Book a Time Slot</a>
+        <a th:href="@{/student/bookings}" th:classappend="${activePage == 'bookings' ? 'active' : null}" th:attr="aria-current=${activePage == 'bookings' ? 'page' : null}">My Bookings</a>
+        <a th:href="@{/student/payments}" th:classappend="${activePage == 'payments' ? 'active' : null}" th:attr="aria-current=${activePage == 'payments' ? 'page' : null}">Payments</a>
+        <a th:href="@{/student/support}" th:classappend="${activePage == 'support' ? 'active' : null}" th:attr="aria-current=${activePage == 'support' ? 'page' : null}">Help &amp; Support</a>
+        <a th:href="@{/student/feedback}" th:classappend="${activePage == 'feedback' ? 'active' : null}" th:attr="aria-current=${activePage == 'feedback' ? 'page' : null}">Feedback &amp; Suggestions</a>
+        <a th:href="@{/logout}">Logout</a>
+    </nav>
+</aside>
+
+<header class="top-bar" th:fragment="topBar">
+    <span>Student Portal</span>
+    <span class="student-profile">Student Account</span>
+</header>

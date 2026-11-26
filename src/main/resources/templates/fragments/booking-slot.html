@@ -1,0 +1,44 @@
+<th:block th:fragment="slotDetails(slot)">
+    <div class="slot-card-header">
+
+        <h3>
+            Slot #
+            <span th:text="${slot.slotId}"></span>
+        </h3>
+
+        <span class="available-label">
+            Available
+        </span>
+
+    </div>
+
+    <div class="slot-details">
+
+        <p>
+            <strong>Date:</strong>
+            <span th:text="${slot.slotDate}"></span>
+        </p>
+
+        <p>
+            <strong>Start Time:</strong>
+            <span th:text="${slot.startTime}"></span>
+        </p>
+
+        <p>
+            <strong>End Time:</strong>
+            <span th:text="${slot.endTime}"></span>
+        </p>
+
+        <p>
+            <strong>Washing Machine:</strong>
+            <span th:text="${slot.machineId}"></span>
+        </p>
+
+        <p>
+            <strong>Dryer:</strong>
+            <span th:text="${slot.dryerId}"></span>
+        </p>
+
+    </div>
+
+</th:block>

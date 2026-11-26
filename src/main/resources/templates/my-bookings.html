@@ -16,20 +16,11 @@
 
 <div class="dashboard-container">
 
-    <aside class="sidebar">
-        <h2>WOLF WASH</h2>
-
-        <nav>
-            <a th:href="@{/student/dashboard}">Dashboard</a>
-            <a th:href="@{/student/book}">Book a Time Slot</a>
-            <a th:href="@{/student/bookings}" class="active">My Bookings</a>
-            <a th:href="@{/student/payments}">Payments</a>
-            <a th:href="@{/student/support}">Help & Support</a>
-            <a th:href="@{/logout}">Logout</a>
-        </nav>
-    </aside>
+    <div th:replace="~{fragments/student-portal :: sidebar('bookings')}"></div>
 
     <main class="main-content">
+        <div th:replace="~{fragments/student-portal :: topBar}"></div>
+
 
         <section class="booking-heading">
             <h1>My Bookings</h1>
