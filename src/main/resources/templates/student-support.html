@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Help &amp; Support | Wolf Wash</title>
+    <link rel="stylesheet" th:href="@{/css/student-dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/payments.css}">
+    <link rel="stylesheet" th:href="@{/css/issues.css}">
+</head>
+<body>
+<div class="dashboard-container">
+    <div th:replace="~{fragments/student-portal :: sidebar('support')}"></div>
+    <main class="main-content payment-page">
+        <div th:replace="~{fragments/student-portal :: topBar}"></div>
+        <div class="support-heading">
+            <h1>Help &amp; Support</h1>
+            <p>Report a laundry or website problem and track your tickets.</p>
+        </div>
+        <p role="alert" th:if="${error}" th:text="${error}"></p>
+        <p role="status" th:if="${success}" th:text="${success}"></p>
+        <section>
+            <h2>Report a problem</h2>
+            <form class="support-form" method="post" th:action="@{/student/support}">
+                <input type="hidden" name="formToken" th:value="${formToken}">
+                <div>
+                    <label for="report-title">Title</label>
+                    <input id="report-title" name="title" maxlength="150" required th:value="${submittedTitle}">
+                </div>
+                <div>
+                    <label for="report-description">Description</label>
+                    <textarea id="report-description" name="description" rows="5" maxlength="2000" required
+                              th:text="${submittedDescription}"></textarea>
+                </div>
+                <button type="submit">Submit report</button>
+            </form>
+        </section>
+        <section th:if="${tickets != null}">
+            <h2>My tickets</h2>
+            <p th:if="${#lists.isEmpty(tickets)}">You have no reported issues.</p>
+            <div class="notice" th:each="ticket : ${tickets}">
+                <strong th:text="|#${ticket.issueId} · ${ticket.title}|"></strong>
+                <span class="status-pill" th:text="${#strings.replace(#strings.replace(ticket.status, 'PENDING', 'New'), '_', ' ')}"></span>
+            </div>
+        </section>
+        <section th:if="${alerts != null}">
+            <h2>Ticket notifications</h2>
+            <p th:if="${#lists.isEmpty(alerts)}">No ticket notifications yet.</p>
+            <p class="notice" th:each="alert : ${alerts}" th:text="${alert}"></p>
+        </section>
+    </main>
+</div>
+</body>
+</html>

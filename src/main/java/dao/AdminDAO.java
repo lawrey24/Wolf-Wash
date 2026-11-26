@@ -29,4 +29,19 @@ public class AdminDAO {
             }
         }
     }
+    public boolean authenticate(String adminId, String password) throws SQLException {
+        String sql = """
+                SELECT admin_id FROM admins
+                WHERE admin_id = ? AND password_hash = ?
+                AND role IN ('ADMIN', 'MAINTENANCE')
+                """;
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, adminId);
+            stmt.setString(2, password);
+            try (ResultSet result = stmt.executeQuery()) {
+                return result.next();
+            }
+        }
+    }
 }

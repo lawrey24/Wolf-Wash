@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reported Issues | Wolf Wash</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" th:href="@{/css/issues.css}">
+</head>
+<body>
+<div class="admin-dashboard">
+    <header class="admin-header">
+        <h1>WOLF <span>WASH</span></h1>
+        <a th:href="@{/admin/logout}">Logout</a>
+    </header>
+    <main class="admin-main">
+        <section class="admin-welcome">
+            <h2>Reported Issues</h2>
+            <a class="admin-action admin-action-secondary" th:href="@{/admin/dashboard}">Back to Admin Dashboard</a>
+        </section>
+        <p class="admin-alert" role="alert" th:if="${error}" th:text="${error}"></p>
+        <p class="admin-success" role="status" th:if="${success}" th:text="${success}"></p>
+
+        <article class="feedback-card issue-detail" th:if="${ticket != null}">
+            <h3 th:text="|#${ticket.issueId} · ${ticket.title}|"></h3>
+            <p><strong>Student:</strong> <span th:text="${ticket.studentName}"></span></p>
+            <p><strong>Student ID:</strong> <span th:text="${ticket.studentId}"></span></p>
+            <p><strong>Submitted:</strong>
+                <span th:text="${#temporals.format(ticket.createdAt, 'MMM d, yyyy · h:mm a')}"></span>
+            </p>
+            <p th:text="${ticket.description}"></p>
+            <form method="post" th:action="@{/admin/issues}">
+                <input type="hidden" name="formToken" th:value="${formToken}">
+                <input type="hidden" name="id" th:value="${ticket.issueId}">
+                <label>Status
+                    <select name="status">
+                        <option value="PENDING" th:selected="${ticket.status == 'PENDING'}">New</option>
+                        <option value="IN_PROGRESS" th:selected="${ticket.status == 'IN_PROGRESS'}">In Progress</option>
+                        <option value="RESOLVED" th:selected="${ticket.status == 'RESOLVED'}">Resolved</option>
+                    </select>
+                </label>
+                <label>Progress note <textarea name="note" maxlength="1000"></textarea></label>
+                <button type="submit">Save update</button>
+            </form>
+            <section class="issue-history">
+                <h3>Update history</h3>
+                <p th:if="${history != null and #lists.isEmpty(history)}">No updates recorded yet.</p>
+                <ol class="issue-timeline">
+                    <li th:each="update : ${history}">
+                        <div class="issue-event">
+                            <h4 th:if="${update.newStatus == null}">Progress note</h4>
+                            <h4 th:if="${update.newStatus != null}"
+                                th:text="|${#strings.capitalize(#strings.toLowerCase(#strings.replace(#strings.replace(update.oldStatus, 'PENDING', 'New'), '_', ' ')))} → ${#strings.capitalize(#strings.toLowerCase(#strings.replace(#strings.replace(update.newStatus, 'PENDING', 'New'), '_', ' ')))}|"></h4>
+                            <span th:text="|${#temporals.format(update.createdAt, 'MMM d, yyyy · h:mm a')} · ${update.adminId}|"></span>
+                        </div>
+                        <p th:unless="${#strings.isEmpty(update.note)}" th:text="${update.note}"></p>
+                    </li>
+                </ol>
+            </section>
+        </article>
+
+        <section class="issue-list" th:if="${tickets != null}">
+            <h3>All tickets</h3>
+            <div class="admin-empty" th:if="${#lists.isEmpty(tickets)}">
+                <h3>No Reported Issues Yet</h3>
+                <p>Student reports will appear here.</p>
+            </div>
+            <article class="issue-list-item" th:each="item : ${tickets}">
+                <h3><a th:href="@{/admin/issues(id=${item.issueId})}" th:text="|#${item.issueId} · ${item.title}|"></a></h3>
+                <p th:text="${item.studentName}"></p>
+                <span class="issue-status" th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(#strings.replace(item.status, 'PENDING', 'New'), '_', ' ')))}"></span>
+            </article>
+        </section>
+    </main>
+</div>
+</body>
+</html>

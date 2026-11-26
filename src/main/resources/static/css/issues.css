@@ -1,0 +1,104 @@
+.support-heading p {
+    margin-top: 6px;
+    color: #536778;
+}
+
+.support-form {
+    display: grid;
+    gap: 16px;
+    max-width: 640px;
+    justify-items: start;
+}
+
+.support-form > div { width: 100%; }
+
+.support-form input[name="title"],
+.support-form select,
+.support-form textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 12px;
+    margin: 6px 0 0;
+    border: 1px solid #cbd9dc;
+    border-radius: 8px;
+    background: #fff;
+    color: inherit;
+    font: inherit;
+}
+
+.support-form textarea { resize: vertical; }
+
+.issue-detail { overflow-wrap: anywhere; }
+
+.issue-history {
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8e5;
+}
+
+.issue-timeline {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.issue-timeline li {
+    position: relative;
+    margin-left: 6px;
+    padding: 0 0 20px 18px;
+    border-left: 2px solid #d9e5de;
+}
+
+.issue-timeline li:last-child { padding-bottom: 0; }
+
+.issue-timeline li::before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: -5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #268056;
+}
+
+.issue-event {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+}
+
+.issue-event span,
+.issue-list-item p { color: #536778; font-size: .875rem; }
+
+.issue-timeline p { margin: 6px 0 0; white-space: pre-wrap; }
+
+.issue-list { margin-top: 24px; }
+
+.issue-list-item {
+    display: grid;
+    gap: 4px 16px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    margin-top: 10px;
+    padding: 14px 18px;
+    border: 1px solid #dfe5e3;
+    border-radius: 9px;
+    background: #fff;
+    overflow-wrap: anywhere;
+}
+
+.issue-list-item h3 { grid-column: 1; font-size: 1rem; }
+.issue-list-item a { color: #21432d; }
+.issue-list-item p { grid-column: 1; }
+.issue-status {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    background: #edf4ef;
+    color: #21432d;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: .85rem;
+}
